@@ -1,4 +1,6 @@
-class BlogPost {
+import 'package:flutter/foundation.dart';
+
+class BlogPost with ChangeNotifier {
   final int id;
   final String title;
   final String body;

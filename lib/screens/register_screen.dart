@@ -1,7 +1,9 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:webapp/helpers/http_exception.dart';
+import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/screens/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,10 +19,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   var _password = '';
   var _password2 = '';
   bool _obscureText = true;
-  bool isLoading = false;
+  bool _isLoading = false;
   var _autoValidate = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  var _errorMessage = "Registration failed.";
 
   String emailValidator = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
       "\\@" +
@@ -30,61 +33,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
       ")+";
 
-  Future<void> createUser(
-      String email, String username, String password, String password2) async {
-    setState(() {
-      isLoading = true;
-    });
-    final response = await http.post(
-      'https://nixlab-blog-api.herokuapp.com/account/register/',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'email': email,
-        'username': username,
-        'password': password,
-        'password2': password2,
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      setState(() {
-        isLoading = false;
-      });
-      print(response.body);
-      final responseData = json.decode(response.body);
-      final SnackBar _snackBar =
-          SnackBar(content: Text(responseData['response']));
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
-      return responseData;
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      print(json.decode(response.body));
-      final errorData = json.decode(response.body);
-      final SnackBar _snackBar = SnackBar(
-        content: Text(errorData['error_message']),
-        duration: Duration(seconds: 5),
-      );
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
-      return errorData;
-    }
-  }
-
-  void _trySubmit() {
+  void _trySubmit() async {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
     if (isValid) {
       _formKey.currentState.save();
-      createUser(_email, _username, _password, _password2);
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        await Provider.of<AuthProvider>(context, listen: false)
+            .register(_email, _username, _password, _password2)
+            .then((value) {
+          final SnackBar _snackBar = SnackBar(
+            content: Text("Registration successful."),
+          );
+          _scaffoldKey.currentState.showSnackBar(_snackBar);
+          Timer(Duration(seconds: 2), () {
+            Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+          });
+        });
+      } on HttpException catch (error) {
+        print(error.toString());
+        if (error.toString().contains('EMAIL_EXISTS')) {
+          _errorMessage = "This email is already in use.";
+        } else if (error.toString().contains('USERNAME_EXISTS')) {
+          _errorMessage = "This username is already in use.";
+        }
+
+        final SnackBar _snackBar = SnackBar(
+          content: Text(_errorMessage),
+          duration: Duration(seconds: 5),
+        );
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
+      } catch (error) {
+        const errorMessage = "Registration failed.";
+        final SnackBar _snackBar = SnackBar(
+          content: Text(errorMessage),
+          duration: Duration(seconds: 5),
+        );
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
+      }
     } else {
       setState(() {
         _autoValidate = true;
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Widget loadingScreen() {
@@ -116,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: isLoading
+          child: _isLoading
               ? loadingScreen()
               : Card(
                   elevation: 8.0,
@@ -315,7 +315,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           FlatButton(
                             onPressed: () {
-                              Navigator.pushNamed(
+                              Navigator.pushReplacementNamed(
                                   context, LoginScreen.routeName);
                             },
                             child: Text(

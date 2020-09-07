@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/widgets/image_picker.dart';
 
 class CreateBlogPost extends StatefulWidget {
@@ -26,62 +26,7 @@ class _CreateBlogPostState extends State<CreateBlogPost> {
     _userImageFile = image;
   }
 
-  Future<void> _createPost(
-      File image, String title, String body, String token) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    Map<String, String> headers = {
-      'Authorization': 'Token $token',
-    };
-
-    var apiUrl = Uri.parse('https://nixlab-blog-api.herokuapp.com/create/');
-
-    var request = http.MultipartRequest("POST", apiUrl);
-    request.headers.addAll(headers);
-    request.fields['title'] = title;
-    request.fields['body'] = body;
-
-    var fileStream = http.ByteStream(image.openRead());
-    var fileLength = await image.length();
-    var multiPartFile = http.MultipartFile(
-      'image',
-      fileStream,
-      fileLength,
-      filename: image.path,
-    );
-    request.files.add(multiPartFile);
-
-    var response = await request.send();
-
-    if (response.statusCode == 201) {
-      setState(() {
-        _isLoading = false;
-      });
-
-      response.stream.transform(utf8.decoder).listen((value) {
-        print(value);
-      });
-
-      final _snackBar = SnackBar(content: Text('Post created successfully.'));
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
-
-      Timer(Duration(seconds: 1), () {
-        Navigator.pop(context);
-      });
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      response.stream.transform(utf8.decoder).listen((value) {
-        final _snackBar = SnackBar(content: Text('$value'));
-        _scaffoldKey.currentState.showSnackBar(_snackBar);
-      });
-    }
-  }
-
-  void _trySubmit(String token) {
+  void _trySubmit() async {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
@@ -96,18 +41,39 @@ class _CreateBlogPostState extends State<CreateBlogPost> {
 
     if (isValid) {
       _formKey.currentState.save();
-      _createPost(_userImageFile, _postTitle, _postBody, token);
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      await Provider.of<BlogProvider>(context, listen: false)
+          .createPost(
+        _userImageFile,
+        _postTitle,
+        _postBody,
+        DateTime.now().toString(),
+      )
+          .then((_) {
+        final _snackBar = SnackBar(
+          content: Text('Post added successfully.'),
+        );
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
+        Timer(Duration(seconds: 2), () {
+          Navigator.pop(context);
+        });
+      });
     } else {
       setState(() {
         _autoValidate = true;
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map args = ModalRoute.of(context).settings.arguments as Map;
-    final _token = args['token'];
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -116,7 +82,7 @@ class _CreateBlogPostState extends State<CreateBlogPost> {
           IconButton(
               icon: Icon(Icons.save),
               onPressed: () {
-                _trySubmit(_token);
+                _trySubmit();
               })
         ],
       ),

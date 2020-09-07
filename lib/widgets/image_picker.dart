@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:webapp/widgets/post_item.dart';
 
 class CustomImagePicker extends StatefulWidget {
   final Function(File pickedImage) imagePickFunc;
@@ -67,30 +68,20 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  FlatButton.icon(
-                    onPressed: () async {
-                      Navigator.pop(ctx);
+                  BottomSheetButton(
+                    title: "Camera",
+                    icon: Icons.camera,
+                    onTap: () async {
                       await _pickImage(ImageSource.camera);
                     },
-                    icon: Icon(
-                      Icons.camera,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    label: const Text("Camera"),
-                    textColor: Theme.of(context).primaryColor,
                   ),
-                  FlatButton.icon(
-                    onPressed: () async {
-                      Navigator.pop(ctx);
+                  BottomSheetButton(
+                    title: "Gallery",
+                    icon: Icons.photo,
+                    onTap: () async {
                       await _pickImage(ImageSource.gallery);
                     },
-                    icon: Icon(
-                      Icons.photo,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    label: const Text("Gallery"),
-                    textColor: Theme.of(context).primaryColor,
-                  )
+                  ),
                 ],
               ),
             ));

@@ -1,9 +1,10 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:webapp/helpers/http_exception.dart';
+import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/screens/home_screen.dart';
 import 'package:webapp/screens/register_screen.dart';
 
@@ -22,63 +23,51 @@ class _LoginScreenState extends State<LoginScreen> {
   var _autoValidate = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  var _errorMessage = "Authentication failed.";
 
-  Future<void> loginUser(String username, String password) async {
-    setState(() {
-      _isLoading = true;
-    });
-    final http.Response response = await http.post(
-      'https://nixlab-blog-api.herokuapp.com/account/login/',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'username': username,
-        'password': password,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        _isLoading = false;
-      });
-      final responseData = jsonDecode(response.body);
-      print(responseData);
-      final _prefs = await SharedPreferences.getInstance();
-      setState(() {
-        _prefs.setString("id", responseData['id']);
-        _prefs.setString("token", responseData['token']);
-        _prefs.setString("username", responseData["username"]);
-      });
-      Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-      return responseData;
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      final errorData = jsonDecode(response.body);
-      print(errorData);
-      final _snackBar = SnackBar(
-        content: Text("${errorData['error_message']}"),
-        duration: Duration(seconds: 5),
-      );
-      _scaffoldKey.currentState.showSnackBar(_snackBar);
-      return errorData;
-    }
-  }
-
-  void _trySubmit() {
+  Future<void> _trySubmit() async {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
     if (isValid) {
       _formKey.currentState.save();
-      loginUser(_username, _password);
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        await Provider.of<AuthProvider>(context, listen: false)
+            .login(_username, _password);
+        Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+      } on HttpException catch (error) {
+        print(error.toString());
+        if (error.toString().contains('INVALID_USERNAME')) {
+          _errorMessage = "Username is incorrect.";
+        } else if (error.toString().contains('INVALID_PASSWORD')) {
+          _errorMessage = "Password is incorrect.";
+        }
+
+        final SnackBar _snackBar = SnackBar(
+          content: Text(_errorMessage),
+          duration: Duration(seconds: 5),
+        );
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
+      } catch (error) {
+        const errorMessage = "Authentication failed.";
+        final SnackBar _snackBar = SnackBar(
+          content: Text(errorMessage),
+          duration: Duration(seconds: 5),
+        );
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
+      }
     } else {
       setState(() {
         _autoValidate = true;
       });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Widget loadingScreen() {
@@ -251,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           FlatButton(
                             onPressed: () {
-                              Navigator.pushNamed(
+                              Navigator.pushReplacementNamed(
                                   context, RegisterScreen.routeName);
                             },
                             child: Text(
