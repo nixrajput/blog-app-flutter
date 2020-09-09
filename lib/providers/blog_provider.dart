@@ -31,7 +31,7 @@ class BlogProvider with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      final latestData = json.decode(response.body);
+      final latestData = json.decode(utf8.decode(response.bodyBytes));
       List<BlogPost> _fetchedBlogPost = [];
       for (int i = 0; i < latestData.length; i++) {
         var post = latestData[i];
@@ -42,7 +42,7 @@ class BlogProvider with ChangeNotifier {
             'Authorization': 'Token $token',
           },
         );
-        final authorDetails = json.decode(authorData.body);
+        final authorDetails = json.decode(utf8.decode(authorData.bodyBytes));
         _fetchedBlogPost.add(
           BlogPost(
             id: post['id'],
@@ -84,7 +84,7 @@ class BlogProvider with ChangeNotifier {
       print(response.statusCode);
       _blogPosts.insert(existingProductIndex, existingProduct);
       notifyListeners();
-      final errorData = jsonDecode(response.body);
+      final errorData = json.decode(utf8.decode(response.bodyBytes));
       print(errorData);
       throw HttpException('DELETION_FAILED');
     }
@@ -118,7 +118,7 @@ class BlogProvider with ChangeNotifier {
     var response = await request.send();
     print(response.statusCode);
     final responseString = await http.Response.fromStream(response);
-    final responseData = json.decode(responseString.body);
+    final responseData = json.decode(utf8.decode(responseString.bodyBytes));
 
     if (response.statusCode == 201) {
       print(responseData);

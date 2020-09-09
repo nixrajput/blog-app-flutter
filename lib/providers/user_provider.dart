@@ -29,7 +29,7 @@ class UserDataProvider with ChangeNotifier {
       },
     );
 
-    final responseData = json.decode(response.body);
+    final responseData = json.decode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 200) {
       List<User> _fetchUserData = [];
@@ -75,7 +75,7 @@ class UserDataProvider with ChangeNotifier {
     var response = await request.send();
     print(response.statusCode);
     final responseString = await http.Response.fromStream(response);
-    final responseData = json.decode(responseString.body);
+    final responseData = json.decode(utf8.decode(responseString.bodyBytes));
     print(response.statusCode);
     print(responseData);
     notifyListeners();
@@ -104,11 +104,11 @@ class UserDataProvider with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
+      final responseData = json.decode(utf8.decode(response.bodyBytes));
       print(responseData);
       notifyListeners();
     } else {
-      final errorData = jsonDecode(response.body);
+      final errorData = jsonDecode(utf8.decode(response.bodyBytes));
       print(errorData);
       throw HttpException(errorData['detail']);
     }
