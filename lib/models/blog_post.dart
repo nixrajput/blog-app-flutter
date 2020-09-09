@@ -4,20 +4,22 @@ class BlogPost with ChangeNotifier {
   final int id;
   final String title;
   final String body;
-  final String image;
+  final String imageUrl;
   final String slug;
+  final String timestamp;
   final String author;
   final String authorId;
-  final String timestamp;
+  final String profilePicUrl;
 
   BlogPost({
     this.id,
     this.title,
     this.body,
-    this.image,
+    this.imageUrl,
     this.slug,
+    this.timestamp,
     this.author,
     this.authorId,
-    this.timestamp,
+    this.profilePicUrl,
   });
 }

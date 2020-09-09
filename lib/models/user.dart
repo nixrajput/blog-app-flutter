@@ -20,4 +20,17 @@ class User with ChangeNotifier {
     this.image,
     this.dob,
   });
+
+  factory User.fromJson(Map<String, dynamic> data) {
+    return User(
+      id: data['id'],
+      firstName: data['first_name'],
+      lastName: data['last_name'],
+      email: data['email'],
+      username: data['username'],
+      phone: data['phone'],
+      image: data['profile_picture']['image'],
+      dob: data['dob'],
+    );
+  }
 }

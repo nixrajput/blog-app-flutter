@@ -1,25 +1,31 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
+import 'package:webapp/widgets/bottom_sheet_button.dart';
+import 'package:webapp/widgets/rounded_network_image.dart';
 
 class BlogPostItem extends StatelessWidget {
   final String title;
   final String body;
-  final String image;
+  final String imageUrl;
   final String slug;
+  final String timestamp;
   final String author;
   final String authorId;
-  final String timestamp;
+  final String profilePicUrl;
 
   BlogPostItem({
     this.title,
     this.body,
-    this.image,
+    this.imageUrl,
     this.slug,
+    this.timestamp,
     this.author,
     this.authorId,
-    this.timestamp,
+    this.profilePicUrl,
   });
 
   void _showPostBottomSheet(BuildContext context, String slug, String authorId,
@@ -101,11 +107,18 @@ class BlogPostItem extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            leading: CircleAvatar(
-              radius: 24.0,
-              backgroundColor: Colors.grey,
+            leading: RoundedNetworkImage(
+              imageSize: 48.0,
+              imageUrl: profilePicUrl,
+              strokeWidth: 0.0,
+              strokeColor: Theme.of(context).accentColor,
             ),
-            title: Text(author),
+            title: Text(
+              author,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             subtitle: Text(
               timestamp,
             ),
@@ -120,13 +133,18 @@ class BlogPostItem extends StatelessWidget {
                 );
               },
               icon: Icon(
-                Icons.expand_more_sharp,
+                Icons.expand_more,
               ),
             ),
           ),
-          Image.network(
-            image,
+          CachedNetworkImage(
+            progressIndicatorBuilder: (ctx, url, downloadProgress) =>
+                CircularProgressIndicator(
+              value: downloadProgress.progress,
+            ),
+            imageUrl: imageUrl,
             width: screenSize.width,
+            fit: BoxFit.cover,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
@@ -174,43 +192,6 @@ class BlogPostItem extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class BottomSheetButton extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Function onTap;
-
-  const BottomSheetButton({this.title, this.icon, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-        onTap();
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: Colors.grey,
-            ),
-            SizedBox(width: 20.0),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontFamily: "Alata",
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

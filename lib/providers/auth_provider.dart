@@ -63,6 +63,7 @@ class AuthProvider with ChangeNotifier {
     String username,
     String password,
     String password2,
+    String timestamp,
   ) async {
     final response = await http.post(
       'https://nixlab-blog-api.herokuapp.com/account/register/',
@@ -74,6 +75,7 @@ class AuthProvider with ChangeNotifier {
         'username': username,
         'password': password,
         'password2': password2,
+        'timestamp': timestamp,
       }),
     );
 
@@ -92,9 +94,9 @@ class AuthProvider with ChangeNotifier {
     return _loginUser(username, password);
   }
 
-  Future<void> register(
-      String email, String username, String password, String password2) async {
-    return _createUser(email, username, password, password2);
+  Future<void> register(String email, String username, String password,
+      String password2, String timestamp) async {
+    return _createUser(email, username, password, password2, timestamp);
   }
 
   Future<bool> autoLogin() async {

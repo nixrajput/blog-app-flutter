@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:webapp/helpers/http_exception.dart';
 import 'package:webapp/models/blog_post.dart';
 
+const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account';
+const apiBlogUrl = 'https://nixlab-blog-api.herokuapp.com';
+
 class BlogProvider with ChangeNotifier {
   List<BlogPost> _blogPosts = [];
   final String token;
@@ -20,7 +23,7 @@ class BlogProvider with ChangeNotifier {
 
   Future<void> fetchBlogPost() async {
     final response = await http.get(
-      'https://nixlab-blog-api.herokuapp.com/',
+      '$apiBlogUrl/',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Token $token',
@@ -32,16 +35,25 @@ class BlogProvider with ChangeNotifier {
       List<BlogPost> _fetchedBlogPost = [];
       for (int i = 0; i < latestData.length; i++) {
         var post = latestData[i];
+        final authorData = await http.get(
+          '$apiAccountUrl/details/${post['author_id']}',
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Token $token',
+          },
+        );
+        final authorDetails = json.decode(authorData.body);
         _fetchedBlogPost.add(
           BlogPost(
             id: post['id'],
             title: post['title'],
             body: post['body'],
-            image: post['image'],
+            imageUrl: post['image'],
             slug: post['slug'],
-            author: post['author'],
-            authorId: post['author_id'],
             timestamp: post['timestamp'],
+            author: authorDetails['username'],
+            authorId: authorDetails['id'],
+            profilePicUrl: authorDetails['profile_picture']['image'],
           ),
         );
       }
@@ -60,7 +72,7 @@ class BlogProvider with ChangeNotifier {
     var existingProduct = _blogPosts[existingProductIndex];
 
     final response = await http.delete(
-      'https://nixlab-blog-api.herokuapp.com/$slug/delete/',
+      '$apiBlogUrl/$slug/delete/',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Token $token',
@@ -85,7 +97,7 @@ class BlogProvider with ChangeNotifier {
       'Authorization': 'Token $token',
     };
 
-    var apiUrl = Uri.parse('https://nixlab-blog-api.herokuapp.com/create/');
+    var apiUrl = Uri.parse('$apiBlogUrl/create/');
 
     var request = http.MultipartRequest("POST", apiUrl);
     request.headers.addAll(headers);
@@ -114,13 +126,13 @@ class BlogProvider with ChangeNotifier {
         id: responseData['id'],
         title: responseData['title'],
         body: responseData['body'],
-        image: responseData['image'],
+        imageUrl: responseData['image'],
         timestamp: responseData['timestamp'],
         slug: responseData['slug'],
         author: responseData['author'],
         authorId: responseData['author_id'],
       );
-      _blogPosts.add(newBlogPost);
+      _blogPosts.insert(0, newBlogPost);
       notifyListeners();
     } else {
       print(responseData);

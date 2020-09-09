@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:webapp/widgets/post_item.dart';
+import 'package:webapp/widgets/bottom_sheet_button.dart';
 
 class CustomImagePicker extends StatefulWidget {
   final Function(File pickedImage) imagePickFunc;
@@ -89,40 +89,36 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        _imageFile != null
-            ? Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height / 2,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  image: DecorationImage(
-                    image: FileImage(_imageFile),
-                    fit: BoxFit.cover,
-                  ),
+    return _imageFile != null
+        ? Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height / 2,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              image: DecorationImage(
+                image: FileImage(_imageFile),
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        : Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height / 2,
+            color: Colors.grey.shade300,
+            child: Center(
+              child: FlatButton.icon(
+                onPressed: () {
+                  _showImageBottomSheet(context);
+                },
+                icon: Icon(
+                  Icons.image,
                 ),
-              )
-            : Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height / 2,
-                color: Colors.grey.shade300,
-                child: Center(
-                  child: FlatButton.icon(
-                    onPressed: () {
-                      _showImageBottomSheet(context);
-                    },
-                    icon: Icon(
-                      Icons.image,
-                    ),
-                    textColor: Theme.of(context).primaryColor,
-                    label: Text(
-                      "Add Image",
-                    ),
-                  ),
+                textColor: Theme.of(context).primaryColor,
+                label: Text(
+                  "Add Image",
                 ),
               ),
-      ],
-    );
+            ),
+          );
   }
 }

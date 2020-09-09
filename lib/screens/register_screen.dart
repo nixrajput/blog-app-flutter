@@ -46,7 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       try {
         await Provider.of<AuthProvider>(context, listen: false)
-            .register(_email, _username, _password, _password2)
+            .register(_email, _username, _password, _password2,
+                DateTime.now().toString())
             .then((value) {
           final SnackBar _snackBar = SnackBar(
             content: Text("Registration successful."),

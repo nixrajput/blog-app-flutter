@@ -3,11 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:webapp/helpers/custom_route.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
+import 'package:webapp/providers/user_provider.dart';
 import 'package:webapp/screens/add_post_screen.dart';
 import 'package:webapp/screens/home_screen.dart';
 import 'package:webapp/screens/login_screen.dart';
+import 'package:webapp/screens/profile_screen.dart';
 import 'package:webapp/screens/register_screen.dart';
 import 'package:webapp/screens/splash_screen.dart';
+
+//flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
 void main() {
   runApp(MyApp());
@@ -25,6 +29,13 @@ class MyApp extends StatelessWidget {
             auth.userId,
             previousBlogPosts == null ? [] : previousBlogPosts.blogPosts,
           ),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, UserDataProvider>(
+          update: (ctx, auth, previousUserData) => UserDataProvider(
+            auth.token,
+            auth.userId,
+            previousUserData == null ? [] : previousUserData.userData,
+          ),
         )
       ],
       child: Consumer<AuthProvider>(
@@ -41,7 +52,7 @@ class MyApp extends StatelessWidget {
             }),
           ),
           home: auth.isAuth
-              ? HomeScreen()
+              ? HomeScreen(auth.token, auth.userId)
               : FutureBuilder(
                   future: auth.autoLogin(),
                   builder: (ctx, authResult) =>
@@ -52,9 +63,10 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginScreen.routeName: (ctx) => LoginScreen(),
             RegisterScreen.routeName: (ctx) => RegisterScreen(),
-            HomeScreen.routeName: (ctx) => HomeScreen(),
+            HomeScreen.routeName: (ctx) => HomeScreen(auth.token, auth.userId),
             CreateBlogPost.routeName: (ctx) => CreateBlogPost(),
             SplashScreen.routeName: (ctx) => SplashScreen(),
+            ProfileScreen.routeName: (ctx) => ProfileScreen(),
           },
         ),
       ),
