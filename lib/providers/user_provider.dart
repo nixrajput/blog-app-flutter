@@ -29,7 +29,6 @@ class UserDataProvider with ChangeNotifier {
       },
     );
 
-    print(response.statusCode);
     final responseData = json.decode(response.body);
 
     if (response.statusCode == 200) {
@@ -47,25 +46,6 @@ class UserDataProvider with ChangeNotifier {
         ),
       );
       _userData = _fetchUserData;
-      notifyListeners();
-    } else {
-      throw HttpException(responseData['detail']);
-    }
-  }
-
-  Future<User> fetchUserDataNew() async {
-    final response = await http.get(
-      '$apiAccountUrl/details/$userId',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Token $token',
-      },
-    );
-
-    final responseData = json.decode(response.body);
-
-    if (response.statusCode == 200) {
-      return User.fromJson(responseData);
     } else {
       throw HttpException(responseData['detail']);
     }
@@ -99,5 +79,38 @@ class UserDataProvider with ChangeNotifier {
     print(response.statusCode);
     print(responseData);
     notifyListeners();
+  }
+
+  Future<void> updateUserData(
+    String firstName,
+    String lastName,
+    String phone,
+    String dob,
+    String timestamp,
+  ) async {
+    final response = await http.put(
+      '$apiAccountUrl/update/',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Token $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'first_name': firstName,
+        'last_name': lastName,
+        'phone': phone,
+        'dob': dob,
+        'timestamp': timestamp,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      print(responseData);
+      notifyListeners();
+    } else {
+      final errorData = jsonDecode(response.body);
+      print(errorData);
+      throw HttpException(errorData['detail']);
+    }
   }
 }

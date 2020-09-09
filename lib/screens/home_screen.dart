@@ -1,60 +1,30 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/helpers/http_exception.dart';
-import 'package:webapp/models/user.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
+import 'package:webapp/providers/user_provider.dart';
 import 'package:webapp/screens/add_post_screen.dart';
 import 'package:webapp/screens/profile_screen.dart';
 import 'package:webapp/widgets/bottom_sheet_button.dart';
 import 'package:webapp/widgets/post_item.dart';
 import 'package:webapp/widgets/rounded_network_image.dart';
 
+const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account/details';
+
 class HomeScreen extends StatefulWidget {
   static const routeName = 'home-screen';
-  final String token;
-  final String currentUserId;
-
-  const HomeScreen(this.token, this.currentUserId);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState(token, currentUserId);
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  Future<User> _userData;
-  final String _token;
-  final String _currentUserId;
-  var _isInit = true;
-
-  _HomeScreenState(this._token, this._currentUserId);
 
   Future<void> _refreshProducts(BuildContext ctx) async {
     await Provider.of<BlogProvider>(ctx, listen: false).fetchBlogPost();
-  }
-
-  Future<User> _fetchUserData() async {
-    final response = await http.get(
-      'https://nixlab-blog-api.herokuapp.com/account/details/$_currentUserId',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Token $_token',
-      },
-    );
-
-    final responseData = json.decode(response.body);
-
-    if (response.statusCode == 200) {
-      return User.fromJson(responseData);
-    } else {
-      throw HttpException(responseData['detail']);
-    }
   }
 
   void _showSettingBottomSheet(BuildContext context, String username) {
@@ -110,25 +80,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_isInit) {
-      _userData = _fetchUserData();
-    }
-    _isInit = false;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
         body: SafeArea(
           child: Column(
             children: [
-              FutureBuilder<User>(
-                future: _userData,
+              FutureBuilder(
+                future: Provider.of<UserDataProvider>(context, listen: false)
+                    .fetchUserData(),
                 builder: (ctx, snapshot) {
                   if (snapshot.hasError) {
+                    print('${snapshot.error}');
                     return Icon(Icons.error);
                   }
                   return Container(
@@ -147,49 +110,52 @@ class _HomeScreenState extends State<HomeScreen> {
                       vertical: 10.0,
                       horizontal: 16.0,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "BlogAPI",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.w800),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.add,
-                                size: 32.0,
+                    child: Consumer<UserDataProvider>(
+                      builder: (ctx, userData, _) => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "BlogAPI",
+                            style: TextStyle(
                                 color: Theme.of(context).accentColor,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.w800),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.add,
+                                  size: 32.0,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, CreateBlogPost.routeName);
+                                },
                               ),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, CreateBlogPost.routeName);
-                              },
-                            ),
-                            SizedBox(width: 20.0),
-                            GestureDetector(
-                              onTap: () {
-                                _showSettingBottomSheet(
-                                  context,
-                                  snapshot.data.username,
-                                );
-                              },
-                              child: RoundedNetworkImage(
-                                imageSize: 40.0,
-                                imageUrl:
-                                    snapshot.hasData ? snapshot.data.image : '',
-                                strokeWidth: 2.0,
-                                strokeColor: Theme.of(context).accentColor,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
+                              SizedBox(width: 20.0),
+                              GestureDetector(
+                                onTap: () {
+                                  _showSettingBottomSheet(
+                                    context,
+                                    userData.userData[0].username,
+                                  );
+                                },
+                                child: RoundedNetworkImage(
+                                  imageSize: 40.0,
+                                  imageUrl: userData.userData.isNotEmpty
+                                      ? userData.userData[0].image
+                                      : '',
+                                  strokeWidth: 2.0,
+                                  strokeColor: Theme.of(context).accentColor,
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

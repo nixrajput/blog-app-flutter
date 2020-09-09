@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webapp/helpers/http_exception.dart';
 
+const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account';
+
 class AuthProvider with ChangeNotifier {
   String _token;
   String _userId;
@@ -27,7 +29,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> _loginUser(String username, String password) async {
     final http.Response response = await http.post(
-      'https://nixlab-blog-api.herokuapp.com/account/login/',
+      '$apiAccountUrl/login/',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -66,7 +68,7 @@ class AuthProvider with ChangeNotifier {
     String timestamp,
   ) async {
     final response = await http.post(
-      'https://nixlab-blog-api.herokuapp.com/account/register/',
+      '$apiAccountUrl/register/',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

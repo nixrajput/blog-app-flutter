@@ -53,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             content: Text("Registration successful."),
           );
           _scaffoldKey.currentState.showSnackBar(_snackBar);
-          Timer(Duration(seconds: 2), () {
+          Timer(Duration(seconds: 1), () {
             Navigator.pushReplacementNamed(context, LoginScreen.routeName);
           });
         });
@@ -67,14 +67,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         final SnackBar _snackBar = SnackBar(
           content: Text(_errorMessage),
-          duration: Duration(seconds: 5),
         );
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } catch (error) {
         const errorMessage = "Registration failed.";
         final SnackBar _snackBar = SnackBar(
           content: Text(errorMessage),
-          duration: Duration(seconds: 5),
         );
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       }
@@ -103,9 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             )
           ]),
       child: Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2.0,
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }

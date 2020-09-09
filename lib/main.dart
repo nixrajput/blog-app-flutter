@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
             }),
           ),
           home: auth.isAuth
-              ? HomeScreen(auth.token, auth.userId)
+              ? HomeScreen()
               : FutureBuilder(
                   future: auth.autoLogin(),
                   builder: (ctx, authResult) =>
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginScreen.routeName: (ctx) => LoginScreen(),
             RegisterScreen.routeName: (ctx) => RegisterScreen(),
-            HomeScreen.routeName: (ctx) => HomeScreen(auth.token, auth.userId),
+            HomeScreen.routeName: (ctx) => HomeScreen(),
             CreateBlogPost.routeName: (ctx) => CreateBlogPost(),
             SplashScreen.routeName: (ctx) => SplashScreen(),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),

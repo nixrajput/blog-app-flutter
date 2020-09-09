@@ -56,22 +56,8 @@ class BlogPostItem extends StatelessWidget {
                   BottomSheetButton(
                     title: "Delete",
                     icon: Icons.delete_forever,
-                    onTap: () async {
-                      try {
-                        await Provider.of<BlogProvider>(context, listen: false)
-                            .deletePost(slug)
-                            .then((_) {
-                          final SnackBar _snackBar = SnackBar(
-                            content: Text("Post deleted"),
-                          );
-                          Scaffold.of(context).showSnackBar(_snackBar);
-                        });
-                      } catch (error) {
-                        final SnackBar _snackBar = SnackBar(
-                          content: Text("An error occurred."),
-                        );
-                        Scaffold.of(context).showSnackBar(_snackBar);
-                      }
+                    onTap: () {
+                      _showDeleteDialog(context, slug);
                     },
                   ),
                 BottomSheetButton(
@@ -86,6 +72,45 @@ class BlogPostItem extends StatelessWidget {
                 ),
               ],
             ));
+  }
+
+  void _showDeleteDialog(BuildContext context, String slug) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Delete"),
+        content: Text("Are you sure to delete this post."),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+            },
+            child: Text("NO"),
+          ),
+          FlatButton(
+            onPressed: () async {
+              try {
+                Navigator.pop(ctx);
+                await Provider.of<BlogProvider>(context, listen: false)
+                    .deletePost(slug)
+                    .then((_) {
+                  final SnackBar _snackBar = SnackBar(
+                    content: Text("Post deleted"),
+                  );
+                  Scaffold.of(context).showSnackBar(_snackBar);
+                });
+              } catch (error) {
+                final SnackBar _snackBar = SnackBar(
+                  content: Text("An error occurred."),
+                );
+                Scaffold.of(context).showSnackBar(_snackBar);
+              }
+            },
+            child: Text("YES"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

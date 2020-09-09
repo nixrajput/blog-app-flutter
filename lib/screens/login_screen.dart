@@ -86,9 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
       child: Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2.0,
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }
