@@ -2,10 +2,7 @@
 
 <p align="center">
 <img width="200px" align="center" src="blog-api-logo.png" alt="logo"/>
-A new blog app for android and ios based on flutter.
-</p>
-
-A new blog app for android and ios based on flutter.
+<p>A new blog app for android and ios based on flutter.</p>
 
 ## Getting Started
 
