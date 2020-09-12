@@ -4,75 +4,59 @@ import 'package:provider/provider.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/providers/user_provider.dart';
-import 'package:webapp/widgets/custom_app_bar.dart';
-import 'package:webapp/widgets/custom_body_text.dart';
-import 'package:webapp/widgets/post_item.dart';
-import 'package:webapp/widgets/post_loading_shimmer.dart';
-import 'package:webapp/widgets/rounded_network_image.dart';
-import 'package:webapp/widgets/shimmer_loading_effect.dart';
+import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
+import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
+import 'package:webapp/widgets/loaders/post_loading_shimmer.dart';
+import 'package:webapp/widgets/loaders/profile_loading_shimmer.dart';
+import 'package:webapp/widgets/post/custom_body_text.dart';
+import 'package:webapp/widgets/post/post_item.dart';
 
 class UserProfileScreen extends StatefulWidget {
   static const routeName = "user-profile-screen";
-  final String userId;
-
-  const UserProfileScreen(this.userId);
 
   @override
-  _UserProfileScreenState createState() => _UserProfileScreenState(userId);
+  _UserProfileScreenState createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final String _userId;
-
-  _UserProfileScreenState(this._userId);
-
   Widget actionButton() {
-    return Container();
+    return IconButton(
+      tooltip: "More",
+      icon: Icon(
+        Icons.more_vert_rounded,
+        size: 32.0,
+        color: Theme.of(context).accentColor,
+      ),
+      onPressed: () {},
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     final auth = Provider.of<AuthProvider>(context, listen: false);
+    final args =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    final _userId = args['userId'];
     return Scaffold(
       key: _scaffoldKey,
       body: SafeArea(
         child: FutureBuilder(
           future: Provider.of<UserDataProvider>(context, listen: false)
               .fetchUserData(_userId),
-          builder: (ctx, snapshot) {
+          builder: (_, snapshot) {
             if (snapshot.hasError) {
               print('${snapshot.error}');
               return Text('${snapshot.error}');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ShimmerLoadingWidget(
-                        width: screenSize.width,
-                        height: 50.0,
-                      ),
-                      SizedBox(height: 10.0),
-                      ShimmerLoadingWidget(
-                        width: 200.0,
-                        height: 200.0,
-                        isCircle: true,
-                      ),
-                    ],
-                  ),
-                ),
-              );
+              return ProfileLoadingShimmer();
             }
 
             return Consumer<UserDataProvider>(
-              builder: (ctx, userData, _) => Column(
+              builder: (_, userData, __) => Column(
                 children: [
                   CustomAppBar(
                     userData.userData.first.username,
@@ -84,7 +68,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   Expanded(
                     child: buildProfileScreen(
-                        context, userData.userData.first, auth),
+                      context,
+                      userData.userData.first,
+                      auth,
+                      _userId,
+                    ),
                   ),
                 ],
               ),
@@ -95,7 +83,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget buildProfileScreen(BuildContext context, user, auth) {
+  Widget buildProfileScreen(BuildContext context, user, auth, _userId) {
     final screenSize = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -112,13 +100,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 padding: EdgeInsets.symmetric(horizontal: screenSize.width / 8),
                 color: user.isFollowing
                     ? Theme.of(context).accentColor
-                    : Theme.of(context).scaffoldBackgroundColor,
+                    : Colors.white.withOpacity(0.9),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                    side: BorderSide(
-                      color: Theme.of(context).accentColor,
-                      width: 2.0,
-                    )),
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
                 child: Text(
                   user.isFollowing ? "Following" : "Follow",
                   style: TextStyle(
@@ -146,7 +131,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           FutureBuilder(
             future: Provider.of<BlogProvider>(context, listen: false)
                 .fetchUserBlogPost(_userId),
-            builder: (ctx, snapshot) {
+            builder: (_, snapshot) {
               if (snapshot.hasError) {
                 print("${snapshot.error}");
               }
@@ -154,7 +139,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 return PostLoadingShimmer();
               }
               return Consumer<BlogProvider>(
-                builder: (ctx, blogPostData, _) =>
+                builder: (_, blogPostData, __) =>
                     blogPostData.blogPosts.length > 0
                         ? ListView.builder(
                             shrinkWrap: true,

@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   static const routeName = 'splash-screen';
-
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  var _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(
               height: 40.0,
             ),
-            if (_isLoading)
-              CircularProgressIndicator(
-                strokeWidth: 2.0,
-              )
           ],
         ),
       ),

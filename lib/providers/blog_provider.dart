@@ -4,11 +4,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:webapp/constants.dart';
 import 'package:webapp/helpers/http_exception.dart';
 import 'package:webapp/models/blog_post.dart';
-
-const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account';
-const apiBlogUrl = 'https://nixlab-blog-api.herokuapp.com';
 
 class BlogProvider with ChangeNotifier {
   List<BlogPost> _currentUserBlogPosts = [];

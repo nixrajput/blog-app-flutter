@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:webapp/widgets/custom_app_bar.dart';
+import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const routeName = "settings-screen";

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/screens/user_profile_screen.dart';
-import 'package:webapp/widgets/bottom_sheet_button.dart';
-import 'package:webapp/widgets/rounded_network_image.dart';
+import 'package:webapp/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
 
 class BlogPostItem extends StatelessWidget {
   final String title;
@@ -23,14 +23,14 @@ class BlogPostItem extends StatelessWidget {
   final String repeatCount;
 
   BlogPostItem({
-    this.title = '',
-    this.body = '',
-    this.imageUrl = '',
-    this.slug = '',
-    this.timestamp = '',
-    this.author = '',
-    this.authorId = '',
-    this.profilePicUrl = '',
+    this.title,
+    this.body,
+    this.imageUrl,
+    this.slug,
+    this.timestamp,
+    this.author,
+    this.authorId,
+    this.profilePicUrl,
     this.likeCount = "0",
     this.isLiked = false,
     this.commentCount = "0",
@@ -54,6 +54,10 @@ class BlogPostItem extends StatelessWidget {
                   BottomSheetButton(
                     icon: Icons.person_add_rounded,
                     title: "Follow @$author",
+                    onTap: () {
+                      Navigator.pushNamed(context, UserProfileScreen.routeName,
+                          arguments: {'userId': authorId});
+                    },
                   ),
                 if (authorId == currentUserId)
                   BottomSheetButton(
@@ -153,10 +157,8 @@ class BlogPostItem extends StatelessWidget {
     return ListTile(
       leading: GestureDetector(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext ctx) => UserProfileScreen(authorId)));
+          Navigator.pushNamed(context, UserProfileScreen.routeName,
+              arguments: {'userId': authorId});
         },
         child: RoundedNetworkImage(
           imageSize: 48.0,
@@ -167,10 +169,8 @@ class BlogPostItem extends StatelessWidget {
       ),
       title: GestureDetector(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext ctx) => UserProfileScreen(authorId)));
+          Navigator.pushNamed(context, UserProfileScreen.routeName,
+              arguments: {'userId': authorId});
         },
         child: Text(
           author,

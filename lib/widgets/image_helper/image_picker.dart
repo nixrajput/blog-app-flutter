@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:webapp/widgets/bottom_sheet_button.dart';
+
+import 'file:///D:/Workspace/Flutter%20Projects/webapp/lib/widgets/bottom_sheet/bottom_sheet_button.dart';
 
 class CustomImagePicker extends StatefulWidget {
   final Function(File pickedImage) imagePickFunc;

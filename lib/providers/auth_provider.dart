@@ -4,9 +4,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webapp/constants.dart';
 import 'package:webapp/helpers/http_exception.dart';
-
-const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account';
 
 class AuthProvider with ChangeNotifier {
   String _token;

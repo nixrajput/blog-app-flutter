@@ -9,12 +9,10 @@ import 'package:webapp/screens/add_post_screen.dart';
 import 'package:webapp/screens/login_screen.dart';
 import 'package:webapp/screens/profile_screen.dart';
 import 'package:webapp/screens/settings_screen.dart';
-import 'package:webapp/widgets/bottom_sheet_button.dart';
-import 'package:webapp/widgets/post_item.dart';
-import 'package:webapp/widgets/post_loading_shimmer.dart';
-import 'package:webapp/widgets/rounded_network_image.dart';
-
-const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account/details';
+import 'package:webapp/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
+import 'package:webapp/widgets/loaders/post_loading_shimmer.dart';
+import 'package:webapp/widgets/post/post_item.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = 'home-screen';
@@ -93,136 +91,162 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        body: SafeArea(
-          child: Column(
-            children: [
-              FutureBuilder(
-                future: Provider.of<UserDataProvider>(context, listen: false)
-                    .fetchCurrentUserData(),
+      key: _scaffoldKey,
+      body: SafeArea(
+        child: Column(
+          children: [
+            FutureBuilder(
+              future: Provider.of<UserDataProvider>(context, listen: false)
+                  .fetchCurrentUserData(),
+              builder: (_, snapshot) {
+                if (snapshot.hasError) {
+                  print('${snapshot.error}');
+                  return Icon(Icons.error);
+                }
+                return Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0.0, 0.0),
+                        blurRadius: 20.0,
+                        color: Colors.grey.withOpacity(0.5),
+                      )
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10.0,
+                    horizontal: 16.0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "BlogAPI",
+                        style: TextStyle(
+                            color: Theme.of(context).accentColor,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.add,
+                              size: 32.0,
+                              color: Theme.of(context).accentColor,
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, CreateBlogPost.routeName);
+                            },
+                          ),
+                          SizedBox(width: 20.0),
+                          Consumer<UserDataProvider>(
+                            builder: (_, userData, __) => GestureDetector(
+                              onTap: () {
+                                _showSettingBottomSheet(
+                                  context,
+                                  userData.currentUserData.first.username,
+                                );
+                              },
+                              child: RoundedNetworkImage(
+                                imageSize: 40.0,
+                                imageUrl: userData.currentUserData.isNotEmpty
+                                    ? userData.currentUserData.first.image
+                                    : '',
+                                strokeWidth: 2.0,
+                                strokeColor: Theme.of(context).accentColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 10.0),
+            if (_isLoading) CircularProgressIndicator(),
+            if (_isLoading) SizedBox(height: 10.0),
+            Expanded(
+              child: FutureBuilder(
+                future: _refreshProducts(context),
                 builder: (ctx, snapshot) {
                   if (snapshot.hasError) {
-                    print('${snapshot.error}');
-                    return Icon(Icons.error);
+                    print("${snapshot.error}");
                   }
-                  return Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      boxShadow: [
-                        BoxShadow(
-                          offset: Offset(0.0, 0.0),
-                          blurRadius: 20.0,
-                          color: Colors.grey.withOpacity(0.5),
-                        )
-                      ],
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10.0,
-                      horizontal: 16.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "BlogAPI",
-                          style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.w800),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.add,
-                                size: 32.0,
-                                color: Theme.of(context).accentColor,
-                              ),
-                              onPressed: () {
-
-                                Navigator.pushNamed(
-                                    context, CreateBlogPost.routeName);
-                              },
-                            ),
-                            SizedBox(width: 20.0),
-                            Consumer<UserDataProvider>(
-                              builder: (ctx, userData, _) => GestureDetector(
-                                onTap: () {
-                                  _showSettingBottomSheet(
-                                    context,
-                                    userData.currentUserData.first.username,
-                                  );
-                                },
-                                child: RoundedNetworkImage(
-                                  imageSize: 40.0,
-                                  imageUrl: userData.currentUserData.isNotEmpty
-                                      ? userData.currentUserData.first.image
-                                      : '',
-                                  strokeWidth: 2.0,
-                                  strokeColor: Theme.of(context).accentColor,
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return PostLoadingShimmer();
+                  }
+                  return RefreshIndicator(
+                    onRefresh: () => _refreshProducts(context),
+                    child: Consumer<BlogProvider>(
+                      builder: (_, blogPostData, __) => blogPostData
+                                  .currentUserBlogPosts.length >
+                              0
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount:
+                                  blogPostData.currentUserBlogPosts.length,
+                              itemBuilder: (_, i) => BlogPostItem(
+                                title:
+                                    blogPostData.currentUserBlogPosts[i].title,
+                                body: blogPostData.currentUserBlogPosts[i].body,
+                                imageUrl: blogPostData
+                                    .currentUserBlogPosts[i].imageUrl,
+                                slug: blogPostData.currentUserBlogPosts[i].slug,
+                                author:
+                                    blogPostData.currentUserBlogPosts[i].author,
+                                authorId: blogPostData
+                                    .currentUserBlogPosts[i].authorId,
+                                profilePicUrl: blogPostData
+                                    .currentUserBlogPosts[i].profilePicUrl,
+                                likeCount: blogPostData
+                                    .currentUserBlogPosts[i].likes.length
+                                    .toString(),
+                                isLiked: blogPostData
+                                    .currentUserBlogPosts[i].isLiked,
+                                timestamp: TimeAgo.getTimeAgo(
+                                  DateTime.parse(
+                                    blogPostData
+                                        .currentUserBlogPosts[i].timestamp,
+                                  ),
                                 ),
                               ),
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    size: 48.0,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(height: 10.0),
+                                  Text(
+                                    "No post available.",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
                     ),
                   );
                 },
               ),
-              SizedBox(height: 10.0),
-              if (_isLoading) CircularProgressIndicator(),
-              if (_isLoading) SizedBox(height: 10.0),
-              Expanded(
-                child: FutureBuilder(
-                  future: _refreshProducts(context),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasError) {
-                      print("${snapshot.error}");
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return PostLoadingShimmer();
-                    }
-
-                    return RefreshIndicator(
-                      onRefresh: () => _refreshProducts(context),
-                      child: Consumer<BlogProvider>(
-                        builder: (ctx, blogPostData, _) => ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: blogPostData.currentUserBlogPosts.length,
-                          itemBuilder: (ctx, i) => BlogPostItem(
-                            title: blogPostData.currentUserBlogPosts[i].title,
-                            body: blogPostData.currentUserBlogPosts[i].body,
-                            imageUrl:
-                                blogPostData.currentUserBlogPosts[i].imageUrl,
-                            slug: blogPostData.currentUserBlogPosts[i].slug,
-                            author: blogPostData.currentUserBlogPosts[i].author,
-                            authorId:
-                                blogPostData.currentUserBlogPosts[i].authorId,
-                            profilePicUrl: blogPostData
-                                .currentUserBlogPosts[i].profilePicUrl,
-                            likeCount: blogPostData
-                                .currentUserBlogPosts[i].likes.length
-                                .toString(),
-                            isLiked:
-                                blogPostData.currentUserBlogPosts[i].isLiked,
-                            timestamp: TimeAgo.getTimeAgo(
-                              DateTime.parse(
-                                blogPostData.currentUserBlogPosts[i].timestamp,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

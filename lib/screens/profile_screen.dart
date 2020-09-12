@@ -9,14 +9,14 @@ import 'package:provider/provider.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/providers/user_provider.dart';
-import 'package:webapp/widgets/bottom_sheet_button.dart';
-import 'package:webapp/widgets/custom_app_bar.dart';
-import 'package:webapp/widgets/custom_body_text.dart';
-import 'package:webapp/widgets/custom_date_chooser.dart';
-import 'package:webapp/widgets/post_item.dart';
-import 'package:webapp/widgets/post_loading_shimmer.dart';
-import 'package:webapp/widgets/rounded_network_image.dart';
-import 'package:webapp/widgets/shimmer_loading_effect.dart';
+import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
+import 'package:webapp/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:webapp/widgets/choosers/custom_date_chooser.dart';
+import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
+import 'package:webapp/widgets/loaders/post_loading_shimmer.dart';
+import 'package:webapp/widgets/loaders/profile_loading_shimmer.dart';
+import 'package:webapp/widgets/post/custom_body_text.dart';
+import 'package:webapp/widgets/post/post_item.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = "profile-screen";
@@ -65,31 +65,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget actionButton(dob) {
-    return Container(
-      child: _isEditing
-          ? IconButton(
-              icon: Icon(
-                Icons.save,
-                size: 32.0,
-                color: Theme.of(context).accentColor,
-              ),
-              onPressed: () {
-                _saveUserData(dob);
-              },
-            )
-          : IconButton(
-              icon: Icon(
-                Icons.edit,
-                size: 32.0,
-                color: Theme.of(context).accentColor,
-              ),
-              onPressed: () {
-                setState(() {
-                  _isEditing = !_isEditing;
-                });
-              },
+    return _isEditing
+        ? IconButton(
+            icon: Icon(
+              Icons.save,
+              size: 32.0,
+              color: Theme.of(context).accentColor,
             ),
-    );
+            onPressed: () {
+              _saveUserData(dob);
+            },
+          )
+        : IconButton(
+            icon: Icon(
+              Icons.edit,
+              size: 32.0,
+              color: Theme.of(context).accentColor,
+            ),
+            onPressed: () {
+              setState(() {
+                _isEditing = !_isEditing;
+              });
+            },
+          );
   }
 
   @override
@@ -102,33 +100,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: FutureBuilder(
           future: Provider.of<UserDataProvider>(context, listen: false)
               .fetchUserData(auth.userId),
-          builder: (ctx, snapshot) {
+          builder: (_, snapshot) {
             if (snapshot.hasError) {
               print('${snapshot.error}');
               return Text('${snapshot.error}');
             }
-
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ShimmerLoadingWidget(
-                        width: screenSize.width,
-                        height: 50.0,
-                      ),
-                      SizedBox(height: 10.0),
-                      ShimmerLoadingWidget(
-                        width: 200.0,
-                        height: 200.0,
-                        isCircle: true,
-                      ),
-                    ],
-                  ),
-                ),
-              );
+              return ProfileLoadingShimmer();
             }
 
             return Consumer<UserDataProvider>(
@@ -207,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               return PostLoadingShimmer();
             }
             return Consumer<BlogProvider>(
-              builder: (ctx, blogPostData, _) =>
+              builder: (_, blogPostData, __) =>
                   blogPostData.blogPosts.length > 0
                       ? ListView.builder(
                           shrinkWrap: true,

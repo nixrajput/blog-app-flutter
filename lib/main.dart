@@ -11,6 +11,7 @@ import 'package:webapp/screens/profile_screen.dart';
 import 'package:webapp/screens/register_screen.dart';
 import 'package:webapp/screens/settings_screen.dart';
 import 'package:webapp/screens/splash_screen.dart';
+import 'package:webapp/screens/user_profile_screen.dart';
 
 //flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
@@ -23,22 +24,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (ctx) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, BlogProvider>(
-          update: (ctx, auth, previousBlogPosts) => BlogProvider(
+          update: (_, auth, __) => BlogProvider(
             auth.token,
             auth.userId,
           ),
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserDataProvider>(
-          update: (ctx, auth, previousUserData) => UserDataProvider(
+          update: (_, auth, __) => UserDataProvider(
             auth.token,
             auth.userId,
           ),
         )
       ],
       child: Consumer<AuthProvider>(
-        builder: (ctx, auth, _) => MaterialApp(
+        builder: (_, auth, __) => MaterialApp(
           title: 'BlogAPI',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -54,19 +55,20 @@ class MyApp extends StatelessWidget {
               ? HomeScreen()
               : FutureBuilder(
                   future: auth.autoLogin(),
-                  builder: (ctx, authResult) =>
+                  builder: (_, authResult) =>
                       authResult.connectionState == ConnectionState.waiting
                           ? SplashScreen()
                           : LoginScreen(),
                 ),
           routes: {
-            LoginScreen.routeName: (ctx) => LoginScreen(),
-            RegisterScreen.routeName: (ctx) => RegisterScreen(),
-            HomeScreen.routeName: (ctx) => HomeScreen(),
-            CreateBlogPost.routeName: (ctx) => CreateBlogPost(),
-            SplashScreen.routeName: (ctx) => SplashScreen(),
-            ProfileScreen.routeName: (ctx) => ProfileScreen(),
-            SettingsScreen.routeName: (ctx) => SettingsScreen(),
+            LoginScreen.routeName: (_) => LoginScreen(),
+            RegisterScreen.routeName: (_) => RegisterScreen(),
+            HomeScreen.routeName: (_) => HomeScreen(),
+            CreateBlogPost.routeName: (_) => CreateBlogPost(),
+            SplashScreen.routeName: (_) => SplashScreen(),
+            ProfileScreen.routeName: (_) => ProfileScreen(),
+            SettingsScreen.routeName: (_) => SettingsScreen(),
+            UserProfileScreen.routeName: (_) => UserProfileScreen(),
           },
         ),
       ),
