@@ -18,20 +18,14 @@ const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account/details';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = 'home-screen';
-  final String userId;
-
-  const HomeScreen(this.userId);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState(userId);
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final String _userId;
   bool _isLoading = false;
-
-  _HomeScreenState(this._userId);
 
   Future<void> _refreshProducts(BuildContext ctx) async {
     await Provider.of<BlogProvider>(ctx, listen: false).fetchBlogPost();
@@ -98,7 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
         key: _scaffoldKey,
         body: SafeArea(
@@ -148,6 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Theme.of(context).accentColor,
                               ),
                               onPressed: () {
+
                                 Navigator.pushNamed(
                                     context, CreateBlogPost.routeName);
                               },
@@ -196,35 +190,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     return RefreshIndicator(
                       onRefresh: () => _refreshProducts(context),
                       child: Consumer<BlogProvider>(
-                          builder: (ctx, blogPostData, _) => ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    blogPostData.currentUserBlogPosts.length,
-                                itemBuilder: (ctx, i) => BlogPostItem(
-                                  title: blogPostData
-                                      .currentUserBlogPosts[i].title,
-                                  body:
-                                      blogPostData.currentUserBlogPosts[i].body,
-                                  imageUrl: blogPostData
-                                      .currentUserBlogPosts[i].imageUrl,
-                                  slug:
-                                      blogPostData.currentUserBlogPosts[i].slug,
-                                  author: blogPostData
-                                      .currentUserBlogPosts[i].author,
-                                  authorId: blogPostData
-                                      .currentUserBlogPosts[i].authorId,
-                                  profilePicUrl: blogPostData
-                                      .currentUserBlogPosts[i].profilePicUrl,
-                                  likeCount: blogPostData
-                                      .currentUserBlogPosts[i].likes.length
-                                      .toString(),
-                                  isLiked: blogPostData
-                                      .currentUserBlogPosts[i].isLiked,
-                                  timestamp: TimeAgo.getTimeAgo(DateTime.parse(
-                                      blogPostData
-                                          .currentUserBlogPosts[i].timestamp)),
-                                ),
-                              )),
+                        builder: (ctx, blogPostData, _) => ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: blogPostData.currentUserBlogPosts.length,
+                          itemBuilder: (ctx, i) => BlogPostItem(
+                            title: blogPostData.currentUserBlogPosts[i].title,
+                            body: blogPostData.currentUserBlogPosts[i].body,
+                            imageUrl:
+                                blogPostData.currentUserBlogPosts[i].imageUrl,
+                            slug: blogPostData.currentUserBlogPosts[i].slug,
+                            author: blogPostData.currentUserBlogPosts[i].author,
+                            authorId:
+                                blogPostData.currentUserBlogPosts[i].authorId,
+                            profilePicUrl: blogPostData
+                                .currentUserBlogPosts[i].profilePicUrl,
+                            likeCount: blogPostData
+                                .currentUserBlogPosts[i].likes.length
+                                .toString(),
+                            isLiked:
+                                blogPostData.currentUserBlogPosts[i].isLiked,
+                            timestamp: TimeAgo.getTimeAgo(
+                              DateTime.parse(
+                                blogPostData.currentUserBlogPosts[i].timestamp,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),
