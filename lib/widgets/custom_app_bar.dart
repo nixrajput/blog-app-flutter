@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class CustomAppBar extends StatelessWidget {
   final String title;
   final Widget actions;
+  final IconData mainIcon;
+  final Function onPressed;
 
-  const CustomAppBar(this.title, this.actions);
+  const CustomAppBar(this.title, this.actions, this.mainIcon, this.onPressed);
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +31,11 @@ class CustomAppBar extends StatelessWidget {
             children: [
               IconButton(
                 icon: Icon(
-                  Icons.arrow_back,
+                  mainIcon,
                   size: 32.0,
                   color: Theme.of(context).accentColor,
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: onPressed,
               ),
               SizedBox(width: 10.0),
               Text(

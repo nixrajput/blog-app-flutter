@@ -9,6 +9,7 @@ import 'package:webapp/screens/home_screen.dart';
 import 'package:webapp/screens/login_screen.dart';
 import 'package:webapp/screens/profile_screen.dart';
 import 'package:webapp/screens/register_screen.dart';
+import 'package:webapp/screens/settings_screen.dart';
 import 'package:webapp/screens/splash_screen.dart';
 
 //flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
@@ -27,14 +28,12 @@ class MyApp extends StatelessWidget {
           update: (ctx, auth, previousBlogPosts) => BlogProvider(
             auth.token,
             auth.userId,
-            previousBlogPosts == null ? [] : previousBlogPosts.blogPosts,
           ),
         ),
         ChangeNotifierProxyProvider<AuthProvider, UserDataProvider>(
           update: (ctx, auth, previousUserData) => UserDataProvider(
             auth.token,
             auth.userId,
-            previousUserData == null ? [] : previousUserData.userData,
           ),
         )
       ],
@@ -52,7 +51,7 @@ class MyApp extends StatelessWidget {
             }),
           ),
           home: auth.isAuth
-              ? HomeScreen()
+              ? HomeScreen(auth.userId)
               : FutureBuilder(
                   future: auth.autoLogin(),
                   builder: (ctx, authResult) =>
@@ -63,10 +62,11 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginScreen.routeName: (ctx) => LoginScreen(),
             RegisterScreen.routeName: (ctx) => RegisterScreen(),
-            HomeScreen.routeName: (ctx) => HomeScreen(),
+            HomeScreen.routeName: (ctx) => HomeScreen(auth.userId),
             CreateBlogPost.routeName: (ctx) => CreateBlogPost(),
             SplashScreen.routeName: (ctx) => SplashScreen(),
             ProfileScreen.routeName: (ctx) => ProfileScreen(),
+            SettingsScreen.routeName: (ctx) => SettingsScreen(),
           },
         ),
       ),

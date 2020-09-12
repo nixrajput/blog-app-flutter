@@ -1,16 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:webapp/providers/auth_provider.dart';
+import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/providers/user_provider.dart';
 import 'package:webapp/widgets/bottom_sheet_button.dart';
 import 'package:webapp/widgets/custom_app_bar.dart';
 import 'package:webapp/widgets/custom_body_text.dart';
 import 'package:webapp/widgets/custom_date_chooser.dart';
+import 'package:webapp/widgets/post_item.dart';
+import 'package:webapp/widgets/post_loading_shimmer.dart';
 import 'package:webapp/widgets/rounded_network_image.dart';
+import 'package:webapp/widgets/shimmer_loading_effect.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = "profile-screen";
@@ -88,43 +94,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final auth = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       key: _scaffoldKey,
       body: SafeArea(
         child: FutureBuilder(
-            future: Provider.of<UserDataProvider>(context, listen: false)
-                .fetchUserData(),
-            builder: (ctx, snapshot) {
-              if (snapshot.hasError) {
-                print('${snapshot.error}');
-                return Text('${snapshot.error}');
-              }
-              return Consumer<UserDataProvider>(
-                builder: (ctx, userData, _) => Column(
-                  children: [
-                    CustomAppBar(userData.userData[0].username,
-                        actionButton(userData.userData[0].dob)),
-                    SizedBox(height: 20.0),
-                    if (_isLoading) CircularProgressIndicator(),
-                    if (_isLoading) SizedBox(height: 20.0),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: _isEditing
-                            ? buildProfileEditScreen(userData.userData[0])
-                            : buildProfileScreen(userData.userData[0]),
+          future: Provider.of<UserDataProvider>(context, listen: false)
+              .fetchUserData(auth.userId),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasError) {
+              print('${snapshot.error}');
+              return Text('${snapshot.error}');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ShimmerLoadingWidget(
+                        width: screenSize.width,
+                        height: 50.0,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 10.0),
+                      ShimmerLoadingWidget(
+                        width: 200.0,
+                        height: 200.0,
+                        isCircle: true,
+                      ),
+                    ],
+                  ),
                 ),
               );
-            }),
+            }
+
+            return Consumer<UserDataProvider>(
+              builder: (ctx, userData, _) => Column(
+                children: [
+                  CustomAppBar(
+                      userData.currentUserData.first.username,
+                      actionButton(userData.currentUserData.first.dob),
+                      Icons.arrow_back,
+                      _isEditing
+                          ? () {
+                              setState(() {
+                                _isEditing = !_isEditing;
+                              });
+                            }
+                          : () {
+                              Navigator.pop(context);
+                            }),
+                  if (_isLoading) SizedBox(height: 20.0),
+                  if (_isLoading) CircularProgressIndicator(),
+                  if (_isLoading) SizedBox(height: 20.0),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: _isEditing
+                          ? buildProfileEditScreen(
+                              userData.currentUserData.first)
+                          : buildProfileScreen(
+                              userData.currentUserData.first,
+                              auth,
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget buildProfileScreen(user) {
+  Widget buildProfileScreen(user, auth) {
     return Column(
       children: [
+        SizedBox(height: 20.0),
         _imageArea(user),
         SizedBox(height: 20.0),
         CustomBodyText(
@@ -143,7 +192,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: "Birth Date",
           value: "${user.dob}",
         ),
+        Divider(
+          color: Colors.grey,
+        ),
         SizedBox(height: 10.0),
+        FutureBuilder(
+          future: Provider.of<BlogProvider>(context, listen: false)
+              .fetchUserBlogPost(auth.userId),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasError) {
+              print("${snapshot.error}");
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return PostLoadingShimmer();
+            }
+            return Consumer<BlogProvider>(
+              builder: (ctx, blogPostData, _) =>
+                  blogPostData.blogPosts.length > 0
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          itemCount: blogPostData.blogPosts.length,
+                          itemBuilder: (ctx, i) => BlogPostItem(
+                            title: blogPostData.blogPosts[i].title,
+                            body: blogPostData.blogPosts[i].body,
+                            imageUrl: blogPostData.blogPosts[i].imageUrl,
+                            slug: blogPostData.blogPosts[i].slug,
+                            author: blogPostData.blogPosts[i].author,
+                            authorId: blogPostData.blogPosts[i].authorId,
+                            profilePicUrl: user.image,
+                            likeCount: blogPostData.blogPosts[i].likes.length
+                                .toString(),
+                            isLiked: blogPostData.blogPosts[i].isLiked,
+                            timestamp: TimeAgo.getTimeAgo(DateTime.parse(
+                                blogPostData.blogPosts[i].timestamp)),
+                          ),
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 48.0,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 10.0),
+                              Text(
+                                "No post available.",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+            );
+          },
+        ),
       ],
     );
   }
@@ -151,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _selectDate() async {
     DateTime pickedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime(2000),
+        initialDate: DateTime.now(),
         firstDate: DateTime(1900),
         lastDate: DateTime.now());
     if (pickedDate != null) {
@@ -187,14 +295,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SnackBar(content: Text("Data saved successfully."));
             _scaffoldKey.currentState.showSnackBar(_snackBar);
           });
-        } on HttpException catch (error) {
-          print(error.toString());
-          var _errorMessage = "An error occurred.";
-
-          final SnackBar _snackBar = SnackBar(content: Text(_errorMessage));
-          _scaffoldKey.currentState.showSnackBar(_snackBar);
         } catch (error) {
-          const errorMessage = "An error occurred.";
+          print(error.toString());
+          var errorMessage = "${error.toString()}";
           final SnackBar _snackBar = SnackBar(content: Text(errorMessage));
           _scaffoldKey.currentState.showSnackBar(_snackBar);
         }
@@ -210,17 +313,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
               .then((value) {
             final SnackBar _snackBar =
-                SnackBar(content: Text("Data saved successfully."));
+                SnackBar(content: Text("PreData: Data saved successfully."));
             _scaffoldKey.currentState.showSnackBar(_snackBar);
           });
-        } on HttpException catch (error) {
-          print(error.toString());
-          var _errorMessage = "${error.toString()}";
-
-          final SnackBar _snackBar = SnackBar(content: Text(_errorMessage));
-          _scaffoldKey.currentState.showSnackBar(_snackBar);
         } catch (error) {
-          const errorMessage = "An error occurred.";
+          print(error.toString());
+          var errorMessage = "${error.toString()}";
           final SnackBar _snackBar = SnackBar(content: Text(errorMessage));
           _scaffoldKey.currentState.showSnackBar(_snackBar);
         }
@@ -244,7 +342,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
-            SizedBox(height: 40.0),
+            SizedBox(height: 10.0),
+            Text(
+              'Edit Profile',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24.0,
+                  color: Theme.of(context).accentColor),
+            ),
+            SizedBox(height: 20.0),
             TextFormField(
               initialValue: user.firstName == null ? '' : "${user.firstName}",
               style: TextStyle(
@@ -317,7 +423,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(height: 10.0),
             CustomDateChooser(
               labelText: "Birth Date",
-              valueText: _dob == null ? user.dob : _dob,
+              valueText: _dob == null
+                  ? (user.dob == null ? 'Select Date' : user.dob)
+                  : _dob,
               onPressed: _selectDate,
             )
           ],

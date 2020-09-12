@@ -11,13 +11,17 @@ const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account';
 class AuthProvider with ChangeNotifier {
   String _token;
   String _userId;
+  DateTime _expiryDate;
+  Timer _authTimer;
 
   bool get isAuth {
     return token != null;
   }
 
   String get token {
-    if (_token != null) {
+    if (_expiryDate != null &&
+        _expiryDate.isAfter(DateTime.now()) &&
+        _token != null) {
       return _token;
     }
     return null;
@@ -41,16 +45,19 @@ class AuthProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      print(responseData);
 
       _token = responseData['token'];
       _userId = responseData['id'];
+      _expiryDate = DateTime.now().add(
+          Duration(seconds: double.parse(responseData['expires_in']).round()));
+      _autoLogout();
       notifyListeners();
 
       final _prefs = await SharedPreferences.getInstance();
       final _userData = json.encode({
         "token": _token,
         "id": _userId,
+        'expiryDate': _expiryDate.toIso8601String(),
       });
       _prefs.setString('userData', _userData);
     } else {
@@ -108,18 +115,39 @@ class AuthProvider with ChangeNotifier {
     }
     final extractedUserData =
         json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+
+    if (expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+
     _token = extractedUserData['token'];
     _userId = extractedUserData['id'];
+    _expiryDate = expiryDate;
+
     notifyListeners();
+    _autoLogout();
     return true;
   }
 
   Future<void> logout() async {
     _token = null;
     _userId = null;
+    if (_authTimer != null) {
+      _authTimer.cancel();
+      _authTimer = null;
+    }
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('userData');
     prefs.clear();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer.cancel();
+    }
+    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }

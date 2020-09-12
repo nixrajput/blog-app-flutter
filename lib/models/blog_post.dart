@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 class BlogPost with ChangeNotifier {
-  final int id;
   final String title;
   final String body;
   final String imageUrl;
@@ -10,9 +9,11 @@ class BlogPost with ChangeNotifier {
   final String author;
   final String authorId;
   final String profilePicUrl;
+  final int likeCount;
+  final List<dynamic> likes;
+  bool isLiked;
 
   BlogPost({
-    this.id,
     this.title,
     this.body,
     this.imageUrl,
@@ -21,5 +22,8 @@ class BlogPost with ChangeNotifier {
     this.author,
     this.authorId,
     this.profilePicUrl,
+    this.likeCount,
+    this.likes,
+    this.isLiked,
   });
 }

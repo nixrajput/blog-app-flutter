@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
+import 'package:webapp/widgets/custom_app_bar.dart';
 import 'package:webapp/widgets/image_picker.dart';
 
 class CreateBlogPost extends StatefulWidget {
@@ -76,71 +77,78 @@ class _CreateBlogPostState extends State<CreateBlogPost> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text("Add Post"),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.save),
-              onPressed: () {
-                _trySubmit();
-              })
-        ],
-      ),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(strokeWidth: 2.0),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CustomImagePicker(
-                    _pickImage,
-                  ),
-                  SizedBox(height: 10.0),
-                  Form(
-                    key: _formKey,
-                    autovalidate: _autoValidate,
-                    child: Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0,
+      body: SafeArea(
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CustomAppBar(
+                      "Add Post",
+                      IconButton(
+                        icon: Icon(
+                          Icons.save,
+                          size: 32.0,
+                          color: Theme.of(context).accentColor,
                         ),
-                        child: TextFormField(
-                          key: ValueKey('title'),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Title can't be empty!";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              labelText: "Title", errorMaxLines: 2),
-                          onSaved: (value) {
-                            _postTitle = value.trim();
-                          },
-                        ),
+                        onPressed: _trySubmit,
                       ),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0,
+                      Icons.arrow_back,
+                      () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    CustomImagePicker(
+                      _pickImage,
+                    ),
+                    SizedBox(height: 10.0),
+                    Form(
+                      key: _formKey,
+                      autovalidate: _autoValidate,
+                      child: Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                          ),
+                          child: TextFormField(
+                            key: ValueKey('title'),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Title can't be empty!";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                                labelText: "Title", errorMaxLines: 2),
+                            onSaved: (value) {
+                              _postTitle = value.trim();
+                            },
+                          ),
                         ),
-                        child: TextFormField(
-                          maxLength: 1000,
-                          key: ValueKey('body'),
-                          decoration: InputDecoration(
-                              labelText: "Write something", errorMaxLines: 2),
-                          onSaved: (value) {
-                            _postBody = value.trim();
-                          },
+                        SizedBox(height: 10.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                          ),
+                          child: TextFormField(
+                            maxLength: 1000,
+                            key: ValueKey('body'),
+                            decoration: InputDecoration(
+                                labelText: "Write something", errorMaxLines: 2),
+                            onSaved: (value) {
+                              _postBody = value.trim();
+                            },
+                          ),
                         ),
-                      ),
-                    ]),
-                  ),
-                ],
+                      ]),
+                    ),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

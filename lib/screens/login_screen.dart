@@ -37,8 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       try {
         await Provider.of<AuthProvider>(context, listen: false)
-            .login(_username, _password);
-        Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+            .login(_username, _password)
+            .then((_) {
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+        });
       } on HttpException catch (error) {
         print(error.toString());
         if (error.toString().contains('INVALID_USERNAME')) {
@@ -47,17 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
           _errorMessage = "Password is incorrect.";
         }
 
-        final SnackBar _snackBar = SnackBar(
-          content: Text(_errorMessage),
-          duration: Duration(seconds: 5),
-        );
+        final SnackBar _snackBar = SnackBar(content: Text(_errorMessage));
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       } catch (error) {
-        const errorMessage = "Authentication failed.";
-        final SnackBar _snackBar = SnackBar(
-          content: Text(errorMessage),
-          duration: Duration(seconds: 5),
-        );
+        print(error.toString());
+        final SnackBar _snackBar = SnackBar(content: Text(error.toString()));
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       }
     } else {
@@ -247,6 +243,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Theme.of(context).accentColor,
                                   fontWeight: FontWeight.bold),
                             ),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
                           )
                         ],
                       ),

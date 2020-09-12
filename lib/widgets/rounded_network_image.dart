@@ -27,9 +27,10 @@ class RoundedNetworkImage extends StatelessWidget {
         height: imageSize,
         child: ClipOval(
           child: CachedNetworkImage(
-            progressIndicatorBuilder: (ctx, url, downloadProgress) =>
-                CircularProgressIndicator(
-              value: downloadProgress.progress,
+            progressIndicatorBuilder: (ctx, url, downloadProgress) => Center(
+              child: CircularProgressIndicator(
+                value: downloadProgress.progress,
+              ),
             ),
             imageUrl: imageUrl != null ? imageUrl : '',
             fit: BoxFit.cover,

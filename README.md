@@ -1,6 +1,6 @@
-# webapp
+# BlogAPI App
 
-A new Flutter application.
+A new blog app for android and ios based on flutter.
 
 ## Getting Started
 

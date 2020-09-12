@@ -9,6 +9,9 @@ class User with ChangeNotifier {
   final String phone;
   final String image;
   final String dob;
+  final List<dynamic> followers;
+  final List<dynamic> following;
+  bool isFollowing;
 
   User({
     this.id,
@@ -19,6 +22,9 @@ class User with ChangeNotifier {
     this.phone,
     this.image,
     this.dob,
+    this.followers,
+    this.following,
+    this.isFollowing,
   });
 
   factory User.fromJson(Map<String, dynamic> data) {

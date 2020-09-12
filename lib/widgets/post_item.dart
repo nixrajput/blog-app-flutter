@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
+import 'package:webapp/screens/user_profile_screen.dart';
 import 'package:webapp/widgets/bottom_sheet_button.dart';
 import 'package:webapp/widgets/rounded_network_image.dart';
 
@@ -16,16 +17,24 @@ class BlogPostItem extends StatelessWidget {
   final String author;
   final String authorId;
   final String profilePicUrl;
+  final String likeCount;
+  final bool isLiked;
+  final String commentCount;
+  final String repeatCount;
 
   BlogPostItem({
-    this.title,
-    this.body,
-    this.imageUrl,
-    this.slug,
-    this.timestamp,
-    this.author,
-    this.authorId,
-    this.profilePicUrl,
+    this.title = '',
+    this.body = '',
+    this.imageUrl = '',
+    this.slug = '',
+    this.timestamp = '',
+    this.author = '',
+    this.authorId = '',
+    this.profilePicUrl = '',
+    this.likeCount = "0",
+    this.isLiked = false,
+    this.commentCount = "0",
+    this.repeatCount = "0",
   });
 
   void _showPostBottomSheet(BuildContext context, String slug, String authorId,
@@ -131,56 +140,92 @@ class BlogPostItem extends StatelessWidget {
       ),
       child: Column(
         children: [
-          ListTile(
-            leading: RoundedNetworkImage(
-              imageSize: 48.0,
-              imageUrl: profilePicUrl,
-              strokeWidth: 0.0,
-              strokeColor: Theme.of(context).accentColor,
-            ),
-            title: Text(
-              author,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(
-              timestamp,
-            ),
-            trailing: IconButton(
-              onPressed: () {
-                _showPostBottomSheet(
-                  context,
-                  slug,
-                  authorId,
-                  author,
-                  auth.userId,
-                );
-              },
-              icon: Icon(
-                Icons.expand_more,
-              ),
-            ),
+          postHead(context, auth),
+          postBody(context, screenSize),
+          Divider(),
+          postBottom(context),
+        ],
+      ),
+    );
+  }
+
+  Widget postHead(BuildContext context, auth) {
+    return ListTile(
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext ctx) => UserProfileScreen(authorId)));
+        },
+        child: RoundedNetworkImage(
+          imageSize: 48.0,
+          imageUrl: profilePicUrl,
+          strokeWidth: 0.0,
+          strokeColor: Theme.of(context).accentColor,
+        ),
+      ),
+      title: GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext ctx) => UserProfileScreen(authorId)));
+        },
+        child: Text(
+          author,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          CachedNetworkImage(
-            progressIndicatorBuilder: (ctx, url, downloadProgress) =>
-                CircularProgressIndicator(
+        ),
+      ),
+      subtitle: Text(
+        timestamp,
+      ),
+      trailing: IconButton(
+        onPressed: () {
+          _showPostBottomSheet(
+            context,
+            slug,
+            authorId,
+            author,
+            auth.userId,
+          );
+        },
+        icon: Icon(
+          Icons.expand_more,
+        ),
+      ),
+    );
+  }
+
+  Widget postBody(BuildContext context, screenSize) {
+    return Column(
+      children: [
+        CachedNetworkImage(
+          progressIndicatorBuilder: (ctx, url, downloadProgress) => Center(
+            child: CircularProgressIndicator(
               value: downloadProgress.progress,
             ),
-            imageUrl: imageUrl,
-            width: screenSize.width,
-            fit: BoxFit.cover,
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
+          imageUrl: imageUrl,
+          width: screenSize.width,
+          fit: BoxFit.cover,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 10,
+            bottom: 10.0,
+          ),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18.0,
             ),
           ),
+        ),
+        if (body != '')
           Padding(
             padding: const EdgeInsets.only(
               top: 10.0,
@@ -189,32 +234,63 @@ class BlogPostItem extends StatelessWidget {
               right: 20.0,
             ),
             child: Text(body),
+          )
+      ],
+    );
+  }
+
+  Widget postBottom(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 10.0,
+        bottom: 20.0,
+        left: 10.0,
+        right: 10.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FlatButton.icon(
+            onPressed: () {
+              Provider.of<BlogProvider>(context, listen: false)
+                  .postLikeToggle(slug);
+            },
+            icon: Icon(
+              isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+              color: isLiked ? Theme.of(context).accentColor : Colors.grey,
+            ),
+            label: Text(
+              likeCount,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 10.0,
-              bottom: 20.0,
-              left: 20.0,
-              right: 20.0,
+          FlatButton.icon(
+            onPressed: () {},
+            icon: Icon(
+              Icons.messenger_rounded,
+              color: Colors.grey,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  Icons.favorite_outline_rounded,
-                  color: Colors.grey,
-                ),
-                Icon(
-                  Icons.messenger_rounded,
-                  color: Colors.grey,
-                ),
-                Icon(
-                  Icons.repeat_rounded,
-                  color: Colors.grey,
-                ),
-              ],
+            label: Text(
+              commentCount,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          FlatButton.icon(
+            onPressed: () {},
+            icon: Icon(Icons.repeat_rounded, color: Colors.grey),
+            label: Text(
+              repeatCount,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ],
       ),
