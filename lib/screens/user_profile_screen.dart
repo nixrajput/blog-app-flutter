@@ -36,6 +36,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
+    final screenSize = MediaQuery.of(context).size;
     final args =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     final _userId = args['userId'];
@@ -52,7 +53,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return ProfileLoadingShimmer();
+              return ProfileLoadingShimmer(screenSize.width);
             }
 
             return Consumer<UserDataProvider>(
@@ -93,9 +94,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           SizedBox(height: 20.0),
           if (_userId != auth.userId)
             Consumer<UserDataProvider>(
-              builder: (ctx, userData, _) => RaisedButton(
+              builder: (_, _userData, __) => RaisedButton(
                 onPressed: () async {
-                  userData.userFollowToggle(_userId);
+                  try {
+                    _userData.userFollowToggle(_userId).then((value) {
+                      final SnackBar _snackBar = SnackBar(
+                        content: Text(value['is_following'] == true
+                            ? "You are following ${_userData.userData.first.username} now."
+                            : 'You unfollowed ${_userData.userData.first.username}.'),
+                      );
+                      _scaffoldKey.currentState.showSnackBar(_snackBar);
+                    });
+                  } catch (error) {
+                    final SnackBar _snackBar = SnackBar(
+                      content: Text("An error occurred."),
+                    );
+                    _scaffoldKey.currentState.showSnackBar(_snackBar);
+                  }
                 },
                 padding: EdgeInsets.symmetric(horizontal: screenSize.width / 8),
                 color: user.isFollowing

@@ -57,6 +57,7 @@ class UserDataProvider with ChangeNotifier {
     } else {
       throw HttpException(responseData['detail']);
     }
+    notifyListeners();
   }
 
   Future<void> fetchUserData(String userId) async {
@@ -106,9 +107,10 @@ class UserDataProvider with ChangeNotifier {
     } else {
       throw HttpException(responseData['detail']);
     }
+    notifyListeners();
   }
 
-  Future<void> userFollowToggle(String userId) async {
+  Future<Map<String, dynamic>> userFollowToggle(String userId) async {
     final response = await http.get(
       '$apiAccountUrl/follow/$userId',
       headers: <String, String>{
@@ -130,6 +132,7 @@ class UserDataProvider with ChangeNotifier {
         _userData.first.isFollowing = true;
       }
       notifyListeners();
+      return responseData;
     } else {
       final errorData = json.decode(utf8.decode(response.bodyBytes));
       print(errorData);
@@ -164,6 +167,7 @@ class UserDataProvider with ChangeNotifier {
     final responseData = json.decode(utf8.decode(responseString.bodyBytes));
     print(response.statusCode);
     print(responseData);
+    fetchCurrentUserData();
     notifyListeners();
   }
 
@@ -192,6 +196,7 @@ class UserDataProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final responseData = json.decode(utf8.decode(response.bodyBytes));
       print(responseData);
+      fetchCurrentUserData();
       notifyListeners();
     } else {
       final errorData = json.decode(utf8.decode(response.bodyBytes));

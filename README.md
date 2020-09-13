@@ -10,15 +10,12 @@
 <img align="center" alt="PostGreSQL" width="32px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/postgresql/postgresql.png" />
 </p>
 
+
 ## Screenshots
 
 <p>
 <img width="360px" src="Login_Page.jpg" alt="login-page"/>
 <img width="360px" src="Register_Page.jpg" alt="login-page"/></p>
-
-<p>
-<img width="360px" src="Home_Page.jpg" alt="login-page"/>
-<img width="360px" src="Profile_Page.jpg" alt="login-page"/></p>
 
 
 ## Connect With Me:

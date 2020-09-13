@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'file:///D:/Workspace/Flutter%20Projects/webapp/lib/widgets/loaders/shimmer_loading_effect.dart';
+import 'package:webapp/widgets/loaders/shimmer_loading_effect.dart';
 
 class PostLoadingShimmer extends StatelessWidget {
   final double width;
@@ -55,6 +54,5 @@ class PostLoadingShimmer extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

@@ -26,6 +26,7 @@ class CustomBodyText extends StatelessWidget {
         children: [
           Text(
             "$title",
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18.0,
@@ -35,6 +36,7 @@ class CustomBodyText extends StatelessWidget {
           SizedBox(width: 20.0),
           Text(
             "$value",
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18.0,

@@ -14,7 +14,6 @@ import 'package:webapp/widgets/bottom_sheet/bottom_sheet_button.dart';
 import 'package:webapp/widgets/choosers/custom_date_chooser.dart';
 import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
 import 'package:webapp/widgets/loaders/post_loading_shimmer.dart';
-import 'package:webapp/widgets/loaders/profile_loading_shimmer.dart';
 import 'package:webapp/widgets/post/custom_body_text.dart';
 import 'package:webapp/widgets/post/post_item.dart';
 
@@ -64,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Widget actionButton(dob) {
+  Widget actionButton(BuildContext context, dob) {
     return _isEditing
         ? IconButton(
             icon: Icon(
@@ -92,83 +91,74 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final _auth = Provider.of<AuthProvider>(context, listen: false);
+    final _currentUserData =
+        Provider.of<UserDataProvider>(context, listen: true).currentUserData;
+    final _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       body: SafeArea(
-        child: FutureBuilder(
-          future: Provider.of<UserDataProvider>(context, listen: false)
-              .fetchUserData(auth.userId),
-          builder: (_, snapshot) {
-            if (snapshot.hasError) {
-              print('${snapshot.error}');
-              return Text('${snapshot.error}');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return ProfileLoadingShimmer();
-            }
-
-            return Consumer<UserDataProvider>(
-              builder: (ctx, userData, _) => Column(
-                children: [
-                  CustomAppBar(
-                      userData.currentUserData.first.username,
-                      actionButton(userData.currentUserData.first.dob),
-                      Icons.arrow_back,
-                      _isEditing
-                          ? () {
-                              setState(() {
-                                _isEditing = !_isEditing;
-                              });
-                            }
-                          : () {
-                              Navigator.pop(context);
-                            }),
-                  if (_isLoading) SizedBox(height: 20.0),
-                  if (_isLoading) CircularProgressIndicator(),
-                  if (_isLoading) SizedBox(height: 20.0),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: _isEditing
-                          ? buildProfileEditScreen(
-                              userData.currentUserData.first)
-                          : buildProfileScreen(
-                              userData.currentUserData.first,
-                              auth,
-                            ),
-                    ),
-                  ),
-                ],
+        child: Column(
+          children: [
+            CustomAppBar(
+              _currentUserData.first.username,
+              actionButton(context, _currentUserData.first.dob),
+              Icons.arrow_back,
+              _isEditing
+                  ? () {
+                      setState(() {
+                        _isEditing = !_isEditing;
+                      });
+                    }
+                  : () {
+                      Navigator.pop(context);
+                    },
+            ),
+            if (_isLoading) SizedBox(height: 20.0),
+            if (_isLoading) CircularProgressIndicator(),
+            if (_isLoading) SizedBox(height: 20.0),
+            Expanded(
+              child: SingleChildScrollView(
+                child: _isEditing
+                    ? buildProfileEditScreen(
+                        context,
+                        _currentUserData,
+                      )
+                    : buildProfileScreen(
+                        context,
+                        _currentUserData,
+                        _auth,
+                      ),
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget buildProfileScreen(user, auth) {
+  Widget buildProfileScreen(BuildContext context, currentUserData, auth) {
     return Column(
       children: [
         SizedBox(height: 20.0),
-        _imageArea(user),
+        _imageArea(context, currentUserData.first),
         SizedBox(height: 20.0),
         CustomBodyText(
           title: "Name",
-          value: "${user.firstName} ${user.lastName}",
+          value:
+              "${currentUserData.first.firstName} ${currentUserData.first.lastName}",
         ),
         CustomBodyText(
           title: "Email",
-          value: "${user.email}",
+          value: "${currentUserData.first.email}",
         ),
         CustomBodyText(
           title: "Phone",
-          value: "${user.phone}",
+          value: "${currentUserData.first.phone}",
         ),
         CustomBodyText(
           title: "Birth Date",
-          value: "${user.dob}",
+          value: "${currentUserData.first.dob}",
         ),
         Divider(
           color: Colors.grey,
@@ -177,33 +167,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
         FutureBuilder(
           future: Provider.of<BlogProvider>(context, listen: false)
               .fetchUserBlogPost(auth.userId),
-          builder: (ctx, snapshot) {
-            if (snapshot.hasError) {
-              print("${snapshot.error}");
+          builder: (_, _snapshot) {
+            if (_snapshot.hasError) {
+              print("${_snapshot.error}");
             }
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (_snapshot.connectionState == ConnectionState.waiting) {
               return PostLoadingShimmer();
             }
             return Consumer<BlogProvider>(
-              builder: (_, blogPostData, __) =>
-                  blogPostData.blogPosts.length > 0
+              builder: (_, _blogPostData, __) =>
+                  _blogPostData.blogPosts.length > 0
                       ? ListView.builder(
                           shrinkWrap: true,
                           physics: ScrollPhysics(),
-                          itemCount: blogPostData.blogPosts.length,
-                          itemBuilder: (ctx, i) => BlogPostItem(
-                            title: blogPostData.blogPosts[i].title,
-                            body: blogPostData.blogPosts[i].body,
-                            imageUrl: blogPostData.blogPosts[i].imageUrl,
-                            slug: blogPostData.blogPosts[i].slug,
-                            author: blogPostData.blogPosts[i].author,
-                            authorId: blogPostData.blogPosts[i].authorId,
-                            profilePicUrl: user.image,
-                            likeCount: blogPostData.blogPosts[i].likes.length
+                          itemCount: _blogPostData.blogPosts.length,
+                          itemBuilder: (_, i) => BlogPostItem(
+                            title: _blogPostData.blogPosts[i].title,
+                            body: _blogPostData.blogPosts[i].body,
+                            imageUrl: _blogPostData.blogPosts[i].imageUrl,
+                            slug: _blogPostData.blogPosts[i].slug,
+                            author: _blogPostData.blogPosts[i].author,
+                            authorId: _blogPostData.blogPosts[i].authorId,
+                            profilePicUrl: currentUserData.first.image,
+                            likeCount: _blogPostData.blogPosts[i].likes.length
                                 .toString(),
-                            isLiked: blogPostData.blogPosts[i].isLiked,
+                            isLiked: _blogPostData.blogPosts[i].isLiked,
                             timestamp: TimeAgo.getTimeAgo(DateTime.parse(
-                                blogPostData.blogPosts[i].timestamp)),
+                                _blogPostData.blogPosts[i].timestamp)),
                           ),
                         )
                       : Center(
@@ -251,6 +241,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
+    if (_dob == null && dob == null) {
+      final SnackBar _snackBar =
+          SnackBar(content: Text("Birth Date can't be empty."));
+      _scaffoldKey.currentState.showSnackBar(_snackBar);
+      return;
+    } else if (_dob != null) {
+      setState(() {
+        _dob = _dob;
+      });
+    } else {
+      setState(() {
+        _dob = dob;
+      });
+    }
+
     if (isValid) {
       _formKey.currentState.save();
 
@@ -258,48 +263,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _isLoading = true;
       });
 
-      if (_dob != null) {
-        try {
-          await Provider.of<UserDataProvider>(context, listen: false)
-              .updateUserData(
-            _firstName,
-            _lastName,
-            _phone,
-            _dob,
-            DateTime.now().toString(),
-          )
-              .then((value) {
-            final SnackBar _snackBar =
-                SnackBar(content: Text("Data saved successfully."));
-            _scaffoldKey.currentState.showSnackBar(_snackBar);
-          });
-        } catch (error) {
-          print(error.toString());
-          var errorMessage = "${error.toString()}";
-          final SnackBar _snackBar = SnackBar(content: Text(errorMessage));
+      try {
+        await Provider.of<UserDataProvider>(context, listen: false)
+            .updateUserData(
+          _firstName,
+          _lastName,
+          _phone,
+          _dob,
+          DateTime.now().toString(),
+        )
+            .then((_) {
+          final SnackBar _snackBar =
+              SnackBar(content: Text("Data saved successfully."));
           _scaffoldKey.currentState.showSnackBar(_snackBar);
-        }
-      } else {
-        try {
-          await Provider.of<UserDataProvider>(context, listen: false)
-              .updateUserData(
-            _firstName,
-            _lastName,
-            _phone,
-            dob,
-            DateTime.now().toString(),
-          )
-              .then((value) {
-            final SnackBar _snackBar =
-                SnackBar(content: Text("PreData: Data saved successfully."));
-            _scaffoldKey.currentState.showSnackBar(_snackBar);
-          });
-        } catch (error) {
-          print(error.toString());
-          var errorMessage = "${error.toString()}";
-          final SnackBar _snackBar = SnackBar(content: Text(errorMessage));
-          _scaffoldKey.currentState.showSnackBar(_snackBar);
-        }
+        });
+      } catch (error) {
+        print(error.toString());
+        var errorMessage = "${error.toString()}";
+        final SnackBar _snackBar = SnackBar(content: Text(errorMessage));
+        _scaffoldKey.currentState.showSnackBar(_snackBar);
       }
     } else {
       setState(() {
@@ -312,7 +294,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  Widget buildProfileEditScreen(user) {
+  Widget buildProfileEditScreen(BuildContext context, currentUserData) {
     return Form(
       key: _formKey,
       autovalidate: _autoValidate,
@@ -320,17 +302,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
-            SizedBox(height: 10.0),
-            Text(
-              'Edit Profile',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.0,
-                  color: Theme.of(context).accentColor),
-            ),
             SizedBox(height: 20.0),
             TextFormField(
-              initialValue: user.firstName == null ? '' : "${user.firstName}",
+              initialValue: currentUserData.first.firstName == null
+                  ? ''
+                  : "${currentUserData.first.firstName}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).accentColor),
@@ -354,7 +330,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 10.0),
             TextFormField(
-              initialValue: user.lastName == null ? '' : "${user.lastName}",
+              initialValue: currentUserData.first.lastName == null
+                  ? ''
+                  : "${currentUserData.first.lastName}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).accentColor),
@@ -378,7 +356,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 10.0),
             TextFormField(
-              initialValue: user.phone == null ? '' : "${user.phone}",
+              initialValue: currentUserData.first.phone == null
+                  ? ''
+                  : "${currentUserData.first.phone}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).accentColor),
@@ -402,7 +382,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             CustomDateChooser(
               labelText: "Birth Date",
               valueText: _dob == null
-                  ? (user.dob == null ? 'Select Date' : user.dob)
+                  ? (currentUserData.first.dob == null
+                      ? 'Select Date'
+                      : currentUserData.first.dob)
                   : _dob,
               onPressed: _selectDate,
             )
@@ -473,7 +455,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ));
   }
 
-  Widget _imageArea(user) {
+  Widget _imageArea(BuildContext context, user) {
     return _userImageFile == null
         ? GestureDetector(
             onTap: () {

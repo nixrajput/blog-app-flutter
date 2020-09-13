@@ -190,6 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               0
                           ? ListView.builder(
                               shrinkWrap: true,
+                              physics: ScrollPhysics(),
                               itemCount:
                                   blogPostData.currentUserBlogPosts.length,
                               itemBuilder: (_, i) => BlogPostItem(
