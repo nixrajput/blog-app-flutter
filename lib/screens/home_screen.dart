@@ -152,14 +152,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   userData.currentUserData.first.username,
                                 );
                               },
-                              child: RoundedNetworkImage(
-                                imageSize: 40.0,
-                                imageUrl: userData.currentUserData.isNotEmpty
-                                    ? userData.currentUserData.first.image
-                                    : '',
-                                strokeWidth: 2.0,
-                                strokeColor: Theme.of(context).accentColor,
-                              ),
+                              child: userData.currentUserData.isEmpty
+                                  ? CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                child: CircularProgressIndicator(),
+                              )
+                                  : RoundedNetworkImage(
+                                      imageSize: 40.0,
+                                      imageUrl:
+                                          userData.currentUserData.first.image,
+                                      strokeWidth: 2.0,
+                                      strokeColor:
+                                          Theme.of(context).accentColor,
+                                    ),
                             ),
                           ),
                         ],
@@ -175,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: FutureBuilder(
                 future: _refreshProducts(context),
-                builder: (ctx, snapshot) {
+                builder: (_, snapshot) {
                   if (snapshot.hasError) {
                     print("${snapshot.error}");
                   }
@@ -186,35 +191,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     onRefresh: () => _refreshProducts(context),
                     child: Consumer<BlogProvider>(
                       builder: (_, blogPostData, __) => blogPostData
-                                  .currentUserBlogPosts.length >
+                                  .allBlogPosts.length >
                               0
                           ? ListView.builder(
                               shrinkWrap: true,
                               physics: ScrollPhysics(),
                               itemCount:
-                                  blogPostData.currentUserBlogPosts.length,
+                                  blogPostData.allBlogPosts.length,
                               itemBuilder: (_, i) => BlogPostItem(
                                 title:
-                                    blogPostData.currentUserBlogPosts[i].title,
-                                body: blogPostData.currentUserBlogPosts[i].body,
+                                    blogPostData.allBlogPosts[i].title,
+                                body: blogPostData.allBlogPosts[i].body,
                                 imageUrl: blogPostData
-                                    .currentUserBlogPosts[i].imageUrl,
-                                slug: blogPostData.currentUserBlogPosts[i].slug,
+                                    .allBlogPosts[i].imageUrl,
+                                slug: blogPostData.allBlogPosts[i].slug,
                                 author:
-                                    blogPostData.currentUserBlogPosts[i].author,
+                                    blogPostData.allBlogPosts[i].author,
                                 authorId: blogPostData
-                                    .currentUserBlogPosts[i].authorId,
+                                    .allBlogPosts[i].authorId,
                                 profilePicUrl: blogPostData
-                                    .currentUserBlogPosts[i].profilePicUrl,
+                                    .allBlogPosts[i].profilePicUrl,
                                 likeCount: blogPostData
-                                    .currentUserBlogPosts[i].likes.length
+                                    .allBlogPosts[i].likes.length
                                     .toString(),
                                 isLiked: blogPostData
-                                    .currentUserBlogPosts[i].isLiked,
+                                    .allBlogPosts[i].isLiked,
                                 timestamp: TimeAgo.getTimeAgo(
                                   DateTime.parse(
                                     blogPostData
-                                        .currentUserBlogPosts[i].timestamp,
+                                        .allBlogPosts[i].timestamp,
                                   ),
                                 ),
                               ),

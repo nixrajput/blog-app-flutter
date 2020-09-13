@@ -9,7 +9,7 @@ import 'package:webapp/helpers/http_exception.dart';
 import 'package:webapp/models/blog_post.dart';
 
 class BlogProvider with ChangeNotifier {
-  List<BlogPost> _currentUserBlogPosts = [];
+  List<BlogPost> _allBlogPosts = [];
   List<BlogPost> _blogPosts = [];
   final String _token;
   final String _userId;
@@ -19,8 +19,8 @@ class BlogProvider with ChangeNotifier {
     this._userId,
   );
 
-  List<BlogPost> get currentUserBlogPosts {
-    return [..._currentUserBlogPosts];
+  List<BlogPost> get allBlogPosts {
+    return [..._allBlogPosts];
   }
 
   List<BlogPost> get blogPosts {
@@ -65,7 +65,7 @@ class BlogProvider with ChangeNotifier {
           ),
         );
       }
-      _currentUserBlogPosts = _fetchedBlogPost.reversed.toList();
+      _allBlogPosts = _fetchedBlogPost;
       notifyListeners();
     } else {
       final errorData = jsonDecode(response.body);
@@ -103,7 +103,7 @@ class BlogProvider with ChangeNotifier {
           ),
         );
       }
-      _blogPosts = _fetchedBlogPost.reversed.toList();
+      _blogPosts = _fetchedBlogPost;
       notifyListeners();
     } else {
       final errorData = jsonDecode(response.body);
@@ -116,8 +116,8 @@ class BlogProvider with ChangeNotifier {
     final existingProductIndex =
         _blogPosts.indexWhere((post) => post.slug == slug);
 
-    final currentUserExistingProductIndex =
-        _currentUserBlogPosts.indexWhere((post) => post.slug == slug);
+    final allExistingProductIndex =
+        _allBlogPosts.indexWhere((post) => post.slug == slug);
 
     final response = await http.get(
       '$apiBlogUrl/$slug/like',
@@ -131,26 +131,19 @@ class BlogProvider with ChangeNotifier {
       final responseData = json.decode(utf8.decode(response.bodyBytes));
       print(responseData);
 
-      if (_currentUserBlogPosts.isNotEmpty) {
-        if (_currentUserBlogPosts
-            .elementAt(currentUserExistingProductIndex)
+      if (_allBlogPosts.isNotEmpty) {
+        if (_allBlogPosts
+            .elementAt(allExistingProductIndex)
             .likes
             .contains(_userId)) {
-          _currentUserBlogPosts
-              .elementAt(currentUserExistingProductIndex)
+          _allBlogPosts
+              .elementAt(allExistingProductIndex)
               .likes
               .remove(_userId);
-          _currentUserBlogPosts
-              .elementAt(currentUserExistingProductIndex)
-              .isLiked = false;
+          _allBlogPosts.elementAt(allExistingProductIndex).isLiked = false;
         } else {
-          _currentUserBlogPosts
-              .elementAt(currentUserExistingProductIndex)
-              .likes
-              .add(_userId);
-          _currentUserBlogPosts
-              .elementAt(currentUserExistingProductIndex)
-              .isLiked = true;
+          _allBlogPosts.elementAt(allExistingProductIndex).likes.add(_userId);
+          _allBlogPosts.elementAt(allExistingProductIndex).isLiked = true;
         }
       }
 
@@ -176,9 +169,11 @@ class BlogProvider with ChangeNotifier {
   }
 
   Future<void> deletePost(String slug) async {
-    final existingProductIndex =
+    final _existingProductIndex =
         _blogPosts.indexWhere((post) => post.slug == slug);
-    var existingProduct = _blogPosts[existingProductIndex];
+
+    final _allExistingProductIndex =
+        _allBlogPosts.indexWhere((post) => post.slug == slug);
 
     final response = await http.delete(
       '$apiBlogUrl/$slug/delete/',
@@ -187,16 +182,30 @@ class BlogProvider with ChangeNotifier {
         'Authorization': 'Token $_token',
       },
     );
-    _blogPosts.removeAt(existingProductIndex);
+    if (_blogPosts.elementAt(_existingProductIndex).slug == slug) {
+      _blogPosts.removeAt(_existingProductIndex);
+    }
+
+    if (_allBlogPosts.elementAt(_allExistingProductIndex).slug == slug) {
+      _allBlogPosts.removeAt(_allExistingProductIndex);
+    }
     notifyListeners();
     if (response.statusCode >= 400) {
-      _blogPosts.insert(existingProductIndex, existingProduct);
+      if (_blogPosts.elementAt(_existingProductIndex).slug == slug) {
+        var _existingProduct = _blogPosts[_existingProductIndex];
+        _blogPosts.insert(_existingProductIndex, _existingProduct);
+      }
+
+      if (_allBlogPosts.elementAt(_allExistingProductIndex).slug == slug) {
+        var _allExistingProduct = _allBlogPosts[_allExistingProductIndex];
+        _allBlogPosts.insert(_allExistingProductIndex, _allExistingProduct);
+
+      }
       notifyListeners();
       final errorData = json.decode(utf8.decode(response.bodyBytes));
       print(errorData);
       throw HttpException(errorData['response']);
     }
-    existingProduct = null;
   }
 
   Future<void> createPost(
@@ -229,16 +238,7 @@ class BlogProvider with ChangeNotifier {
 
     if (response.statusCode == 201) {
       print(responseData);
-      final newBlogPost = BlogPost(
-        title: responseData['title'],
-        body: responseData['body'],
-        imageUrl: responseData['image'],
-        timestamp: responseData['timestamp'],
-        slug: responseData['slug'],
-        author: responseData['author'],
-        authorId: responseData['author_id'],
-      );
-      _blogPosts.insert(0, newBlogPost);
+      fetchBlogPost();
       notifyListeners();
     } else {
       throw HttpException(responseData['detail']);

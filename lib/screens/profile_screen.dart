@@ -287,6 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _autoValidate = true;
       });
+      return;
     }
     setState(() {
       _isLoading = false;
@@ -456,65 +457,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _imageArea(BuildContext context, user) {
-    return _userImageFile == null
-        ? GestureDetector(
-            onTap: () {
-              _showImageBottomSheet(context);
-            },
-            child: RoundedNetworkImage(
-              imageSize: 200.0,
-              imageUrl: user.image,
-              strokeWidth: 4.0,
-              strokeColor: Theme.of(context).accentColor,
-            ),
-          )
-        : GestureDetector(
-            onTap: () {
-              _showImageBottomSheet(context);
-            },
-            child: _userImageFile != null
-                ? Column(
-                    children: [
-                      Container(
-                        width: 200.0,
-                        height: 200.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: FileImage(_userImageFile),
-                            fit: BoxFit.contain,
-                          ),
+    return user.image == null
+        ? _userImageFile != null
+            ? GestureDetector(
+                onTap: () {
+                  _showImageBottomSheet(context);
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      width: 200.0,
+                      height: 200.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: FileImage(_userImageFile),
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      SizedBox(height: 20.0),
-                      RaisedButton(
-                        onPressed: _uploadProfilePicture,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 40.0),
-                        color: Theme.of(context).accentColor,
-                        textColor: Theme.of(context).scaffoldBackgroundColor,
-                        child: Text("Save"),
-                      )
-                    ],
-                  )
-                : Container(
-                    width: 200.0,
-                    height: 200.0,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      shape: BoxShape.circle,
                     ),
-                    child: Center(
-                      child: Text(
-                        "Add Image",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                          color: Theme.of(context).accentColor,
-                        ),
+                    SizedBox(height: 20.0),
+                    RaisedButton(
+                      onPressed: _uploadProfilePicture,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 40.0),
+                      color: Theme.of(context).accentColor,
+                      textColor: Theme.of(context).scaffoldBackgroundColor,
+                      child: Text("Save"),
+                    )
+                  ],
+                ),
+              )
+            : GestureDetector(
+                onTap: () {
+                  _showImageBottomSheet(context);
+                },
+                child: Container(
+                  width: 200.0,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Add Image",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                        color: Theme.of(context).accentColor,
                       ),
                     ),
                   ),
-          );
+                ),
+              )
+        : _userImageFile != null
+            ? GestureDetector(
+      onTap: () {
+        _showImageBottomSheet(context);
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 200.0,
+            height: 200.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: FileImage(_userImageFile),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.0),
+          RaisedButton(
+            onPressed: _uploadProfilePicture,
+            padding: const EdgeInsets.symmetric(
+                vertical: 16.0, horizontal: 40.0),
+            color: Theme.of(context).accentColor,
+            textColor: Theme.of(context).scaffoldBackgroundColor,
+            child: Text("Save"),
+          )
+        ],
+      ),
+    )
+            : GestureDetector(
+                onTap: () {
+                  _showImageBottomSheet(context);
+                },
+                child: RoundedNetworkImage(
+                  imageSize: 200.0,
+                  imageUrl: user.image,
+                  strokeWidth: 4.0,
+                  strokeColor: Theme.of(context).accentColor,
+                ),
+              );
   }
 }

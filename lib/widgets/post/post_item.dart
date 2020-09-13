@@ -99,6 +99,7 @@ class BlogPostItem extends StatelessWidget {
               Navigator.pop(ctx);
             },
             child: Text("NO"),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           FlatButton(
             onPressed: () async {
@@ -113,13 +114,15 @@ class BlogPostItem extends StatelessWidget {
                   Scaffold.of(context).showSnackBar(_snackBar);
                 });
               } catch (error) {
+                print(error.toString());
                 final SnackBar _snackBar = SnackBar(
-                  content: Text("An error occurred."),
+                  content: Text(error.toString()),
                 );
                 Scaffold.of(context).showSnackBar(_snackBar);
               }
             },
             child: Text("YES"),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ],
       ),

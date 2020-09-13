@@ -14,7 +14,8 @@ class CreateBlogPost extends StatefulWidget {
   _CreateBlogPostState createState() => _CreateBlogPostState();
 }
 
-class _CreateBlogPostState extends State<CreateBlogPost> {
+class _CreateBlogPostState extends State<CreateBlogPost>
+    with AutomaticKeepAliveClientMixin {
   File _userImageFile;
   var _postTitle;
   var _postBody;
@@ -47,22 +48,26 @@ class _CreateBlogPostState extends State<CreateBlogPost> {
         _isLoading = true;
       });
 
-      await Provider.of<BlogProvider>(context, listen: false)
-          .createPost(
-        _userImageFile,
-        _postTitle,
-        _postBody,
-        DateTime.now().toString(),
-      )
-          .then((_) {
-        final _snackBar = SnackBar(
-          content: Text('Post added successfully.'),
-        );
-        _scaffoldKey.currentState.showSnackBar(_snackBar);
-        Timer(Duration(seconds: 2), () {
-          Navigator.pop(context);
+      try {
+        await Provider.of<BlogProvider>(context, listen: false)
+            .createPost(
+          _userImageFile,
+          _postTitle,
+          _postBody,
+          DateTime.now().toString(),
+        )
+            .then((_) {
+          final _snackBar = SnackBar(
+            content: Text('Post added successfully.'),
+          );
+          _scaffoldKey.currentState.showSnackBar(_snackBar);
+          Timer(Duration(seconds: 1), () {
+            Navigator.pop(context);
+          });
         });
-      });
+      } catch (error) {
+        print(error.toString());
+      }
     } else {
       setState(() {
         _autoValidate = true;
@@ -151,4 +156,7 @@ class _CreateBlogPostState extends State<CreateBlogPost> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -148,6 +148,7 @@ class UserDataProvider with ChangeNotifier {
     var _apiUrl = Uri.parse('$apiAccountUrl/upload_profile_picture/');
 
     var request = http.MultipartRequest("POST", _apiUrl);
+
     request.headers.addAll(headers);
     request.fields['timestamp'] = timestamp;
 
@@ -162,6 +163,7 @@ class UserDataProvider with ChangeNotifier {
     request.files.add(multiPartFile);
 
     var response = await request.send();
+
     print(response.statusCode);
     final responseString = await http.Response.fromStream(response);
     final responseData = json.decode(utf8.decode(responseString.bodyBytes));

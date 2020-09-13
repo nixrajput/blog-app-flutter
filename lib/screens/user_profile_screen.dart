@@ -18,7 +18,8 @@ class UserProfileScreen extends StatefulWidget {
   _UserProfileScreenState createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> {
+class _UserProfileScreenState extends State<UserProfileScreen>
+    with AutomaticKeepAliveClientMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget actionButton() {
@@ -90,7 +91,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: Column(
         children: [
           SizedBox(height: 20.0),
-          _imageArea(user),
+          RoundedNetworkImage(
+            imageSize: 200.0,
+            imageUrl: user.image,
+            strokeWidth: 4.0,
+            strokeColor: Theme.of(context).accentColor,
+          ),
           SizedBox(height: 20.0),
           if (_userId != auth.userId)
             Consumer<UserDataProvider>(
@@ -101,7 +107,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       final SnackBar _snackBar = SnackBar(
                         content: Text(value['is_following'] == true
                             ? "You are following ${_userData.userData.first.username} now."
-                            : 'You unfollowed ${_userData.userData.first.username}.'),
+                            : 'You have unfollowed ${_userData.userData.first.username}.'),
                       );
                       _scaffoldKey.currentState.showSnackBar(_snackBar);
                     });
@@ -115,9 +121,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 padding: EdgeInsets.symmetric(horizontal: screenSize.width / 8),
                 color: user.isFollowing
                     ? Theme.of(context).accentColor
-                    : Colors.white.withOpacity(0.9),
+                    : Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  side: user.isFollowing
+                      ? BorderSide(color: Colors.transparent)
+                      : BorderSide(color: Theme.of(context).accentColor),
                 ),
                 child: Text(
                   user.isFollowing ? "Following" : "Follow",
@@ -204,12 +213,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _imageArea(user) {
-    return RoundedNetworkImage(
-      imageSize: 200.0,
-      imageUrl: user.image,
-      strokeWidth: 4.0,
-      strokeColor: Theme.of(context).accentColor,
-    );
-  }
+  @override
+  bool get wantKeepAlive => true;
 }
