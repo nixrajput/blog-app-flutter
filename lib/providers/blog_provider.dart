@@ -37,8 +37,12 @@ class BlogProvider with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      final latestData = json.decode(utf8.decode(response.bodyBytes));
+      var _jsonData = utf8.decode(response.bodyBytes);
+
+      final latestData = json.decode(_jsonData);
+
       List<BlogPost> _fetchedBlogPost = [];
+
       for (int i = 0; i < latestData.length; i++) {
         var post = latestData[i];
         final authorData = await http.get(
@@ -69,7 +73,6 @@ class BlogProvider with ChangeNotifier {
       notifyListeners();
     } else {
       final errorData = jsonDecode(response.body);
-      print(errorData);
       throw HttpException(errorData['error_message']);
     }
   }
@@ -182,11 +185,13 @@ class BlogProvider with ChangeNotifier {
         'Authorization': 'Token $_token',
       },
     );
-    if (_blogPosts.elementAt(_existingProductIndex).slug == slug) {
+    if (_blogPosts.isNotEmpty &&
+        _blogPosts.elementAt(_existingProductIndex).slug == slug) {
       _blogPosts.removeAt(_existingProductIndex);
     }
 
-    if (_allBlogPosts.elementAt(_allExistingProductIndex).slug == slug) {
+    if (_allBlogPosts.isNotEmpty &&
+        _allBlogPosts.elementAt(_allExistingProductIndex).slug == slug) {
       _allBlogPosts.removeAt(_allExistingProductIndex);
     }
     notifyListeners();
@@ -199,7 +204,6 @@ class BlogProvider with ChangeNotifier {
       if (_allBlogPosts.elementAt(_allExistingProductIndex).slug == slug) {
         var _allExistingProduct = _allBlogPosts[_allExistingProductIndex];
         _allBlogPosts.insert(_allExistingProductIndex, _allExistingProduct);
-
       }
       notifyListeners();
       final errorData = json.decode(utf8.decode(response.bodyBytes));
@@ -238,7 +242,7 @@ class BlogProvider with ChangeNotifier {
 
     if (response.statusCode == 201) {
       print(responseData);
-      fetchBlogPost();
+      await fetchBlogPost();
       notifyListeners();
     } else {
       throw HttpException(responseData['detail']);

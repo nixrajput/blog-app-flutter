@@ -133,26 +133,15 @@ class BlogPostItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final screenSize = MediaQuery.of(context).size;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0.0, 0.0),
-            blurRadius: 20.0,
-            color: Colors.grey.withOpacity(0.5),
-          )
-        ],
-      ),
-      child: Column(
-        children: [
-          postHead(context, auth),
-          postBody(context, screenSize),
-          Divider(),
-          postBottom(context),
-        ],
-      ),
+    return Column(
+      children: [
+        postHead(context, auth),
+        postBody(context, screenSize),
+        postBottom(context),
+        Divider(
+          color: Theme.of(context).accentColor,
+        )
+      ],
     );
   }
 
@@ -178,12 +167,16 @@ class BlogPostItem extends StatelessWidget {
         child: Text(
           author,
           style: TextStyle(
+            color: Theme.of(context).accentColor,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
       subtitle: Text(
         timestamp,
+        style: TextStyle(
+          color: Theme.of(context).accentColor.withOpacity(0.8),
+        ),
       ),
       trailing: IconButton(
         onPressed: () {
@@ -197,6 +190,7 @@ class BlogPostItem extends StatelessWidget {
         },
         icon: Icon(
           Icons.expand_more,
+          color: Theme.of(context).accentColor,
         ),
       ),
     );
@@ -218,13 +212,13 @@ class BlogPostItem extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(
             top: 10,
-            bottom: 10.0,
           ),
           child: Text(
             title,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18.0,
+              color: Theme.of(context).accentColor,
             ),
           ),
         ),
@@ -232,11 +226,15 @@ class BlogPostItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(
               top: 10.0,
-              bottom: 10.0,
               left: 20.0,
               right: 20.0,
             ),
-            child: Text(body),
+            child: Text(
+              body,
+              style: TextStyle(
+                color: Theme.of(context).accentColor,
+              ),
+            ),
           )
       ],
     );
@@ -246,9 +244,8 @@ class BlogPostItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(
         top: 10.0,
-        bottom: 20.0,
-        left: 10.0,
-        right: 10.0,
+        left: 20.0,
+        right: 20.0,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -260,11 +257,13 @@ class BlogPostItem extends StatelessWidget {
             },
             icon: Icon(
               isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-              color: isLiked ? Theme.of(context).accentColor : Colors.grey,
+              color: isLiked ? Colors.deepPurple : Colors.grey,
+              size: 20.0,
             ),
             label: Text(
               likeCount,
               style: TextStyle(
+                color: Theme.of(context).accentColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -275,10 +274,12 @@ class BlogPostItem extends StatelessWidget {
             icon: Icon(
               Icons.messenger_rounded,
               color: Colors.grey,
+              size: 20.0,
             ),
             label: Text(
               commentCount,
               style: TextStyle(
+                color: Theme.of(context).accentColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -286,10 +287,15 @@ class BlogPostItem extends StatelessWidget {
           ),
           FlatButton.icon(
             onPressed: () {},
-            icon: Icon(Icons.repeat_rounded, color: Colors.grey),
+            icon: Icon(
+              Icons.repeat_rounded,
+              color: Colors.grey,
+              size: 20.0,
+            ),
             label: Text(
               repeatCount,
               style: TextStyle(
+                color: Theme.of(context).accentColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

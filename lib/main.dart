@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/helpers/custom_route.dart';
+import 'package:webapp/constants.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/providers/user_provider.dart';
@@ -12,8 +12,6 @@ import 'package:webapp/screens/register_screen.dart';
 import 'package:webapp/screens/settings_screen.dart';
 import 'package:webapp/screens/splash_screen.dart';
 import 'package:webapp/screens/user_profile_screen.dart';
-
-//flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
 void main() {
   runApp(MyApp());
@@ -42,15 +40,8 @@ class MyApp extends StatelessWidget {
         builder: (_, auth, __) => MaterialApp(
           title: 'BlogAPI',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            scaffoldBackgroundColor: Color(0xFFFDFDFD),
-            primarySwatch: Colors.deepPurple,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            pageTransitionsTheme: PageTransitionsTheme(builders: {
-              TargetPlatform.android: CustomPageTransitionBuilder(),
-              TargetPlatform.iOS: CustomPageTransitionBuilder(),
-            }),
-          ),
+          theme: lightTheme,
+          darkTheme: darkTheme,
           home: auth.isAuth
               ? HomeScreen()
               : FutureBuilder(

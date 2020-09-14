@@ -9,18 +9,14 @@ class CustomBodyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      padding: const EdgeInsets.only(
+        left: 10.0,
+        right: 10.0,
+        bottom: 10.0,
+      ),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0.0, 0.0),
-            blurRadius: 20.0,
-            color: Colors.grey.withOpacity(0.5),
-          )
-        ],
       ),
       child: Row(
         children: [

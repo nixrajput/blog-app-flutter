@@ -54,7 +54,11 @@ class ShimmerLoadingWidgetState extends State<ShimmerLoadingWidget>
           gradient: LinearGradient(
             begin: Alignment(gradientPosition.value, 0),
             end: Alignment(-1, 0),
-            colors: [Colors.black12, Colors.black26, Colors.black12],
+            colors: [
+              Colors.grey.shade500,
+              Colors.grey.shade600,
+              Colors.grey.shade500
+            ],
           )),
     );
   }

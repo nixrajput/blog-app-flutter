@@ -26,9 +26,9 @@ class BottomSheetButton extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontSize: 18.0,
-                fontFamily: "Alata",
-              ),
+                  fontSize: 18.0,
+                  fontFamily: "Alata",
+                  color: Theme.of(context).accentColor),
             ),
           ],
         ),

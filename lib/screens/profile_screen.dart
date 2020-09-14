@@ -13,7 +13,6 @@ import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:webapp/widgets/bottom_sheet/bottom_sheet_button.dart';
 import 'package:webapp/widgets/choosers/custom_date_chooser.dart';
 import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
-import 'package:webapp/widgets/loaders/post_loading_shimmer.dart';
 import 'package:webapp/widgets/post/custom_body_text.dart';
 import 'package:webapp/widgets/post/post_item.dart';
 
@@ -94,7 +93,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final _auth = Provider.of<AuthProvider>(context, listen: false);
     final _currentUserData =
         Provider.of<UserDataProvider>(context, listen: true).currentUserData;
-    final _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       body: SafeArea(
@@ -161,9 +159,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           value: "${currentUserData.first.dob}",
         ),
         Divider(
-          color: Colors.grey,
+          color: Theme.of(context).accentColor,
         ),
-        SizedBox(height: 10.0),
         FutureBuilder(
           future: Provider.of<BlogProvider>(context, listen: false)
               .fetchUserBlogPost(auth.userId),
@@ -172,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               print("${_snapshot.error}");
             }
             if (_snapshot.connectionState == ConnectionState.waiting) {
-              return PostLoadingShimmer();
+              return CircularProgressIndicator();
             }
             return Consumer<BlogProvider>(
               builder: (_, _blogPostData, __) =>
@@ -513,34 +510,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
         : _userImageFile != null
             ? GestureDetector(
-      onTap: () {
-        _showImageBottomSheet(context);
-      },
-      child: Column(
-        children: [
-          Container(
-            width: 200.0,
-            height: 200.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: FileImage(_userImageFile),
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          SizedBox(height: 20.0),
-          RaisedButton(
-            onPressed: _uploadProfilePicture,
-            padding: const EdgeInsets.symmetric(
-                vertical: 16.0, horizontal: 40.0),
-            color: Theme.of(context).accentColor,
-            textColor: Theme.of(context).scaffoldBackgroundColor,
-            child: Text("Save"),
-          )
-        ],
-      ),
-    )
+                onTap: () {
+                  _showImageBottomSheet(context);
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      width: 200.0,
+                      height: 200.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: FileImage(_userImageFile),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    RaisedButton(
+                      onPressed: _uploadProfilePicture,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 40.0),
+                      color: Theme.of(context).accentColor,
+                      textColor: Theme.of(context).scaffoldBackgroundColor,
+                      child: Text("Save"),
+                    )
+                  ],
+                ),
+              )
             : GestureDetector(
                 onTap: () {
                   _showImageBottomSheet(context);

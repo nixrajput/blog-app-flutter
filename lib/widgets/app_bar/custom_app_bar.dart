@@ -16,9 +16,9 @@ class CustomAppBar extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            offset: Offset(0.0, 0.0),
-            blurRadius: 20.0,
-            color: Colors.grey.withOpacity(0.5),
+            offset: Offset(0.0, 4.0),
+            blurRadius: 8.0,
+            color: Colors.grey.withOpacity(0.4),
           )
         ],
       ),

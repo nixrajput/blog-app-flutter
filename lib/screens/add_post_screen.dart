@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:webapp/widgets/image_helper/image_picker.dart';
+import 'package:webapp/widgets/loaders/custom_loading_screen.dart';
 
 class CreateBlogPost extends StatefulWidget {
   static const routeName = 'add-post-screen';
@@ -84,9 +85,7 @@ class _CreateBlogPostState extends State<CreateBlogPost>
       key: _scaffoldKey,
       body: SafeArea(
         child: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? CustomLoadingScreen()
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

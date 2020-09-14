@@ -6,7 +6,6 @@ import 'package:webapp/providers/blog_provider.dart';
 import 'package:webapp/providers/user_provider.dart';
 import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
-import 'package:webapp/widgets/loaders/post_loading_shimmer.dart';
 import 'package:webapp/widgets/loaders/profile_loading_shimmer.dart';
 import 'package:webapp/widgets/post/custom_body_text.dart';
 import 'package:webapp/widgets/post/post_item.dart';
@@ -121,7 +120,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 padding: EdgeInsets.symmetric(horizontal: screenSize.width / 8),
                 color: user.isFollowing
                     ? Theme.of(context).accentColor
-                    : Colors.white,
+                    : Theme.of(context).scaffoldBackgroundColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(4.0)),
                   side: user.isFollowing
@@ -132,7 +131,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                   user.isFollowing ? "Following" : "Follow",
                   style: TextStyle(
                     color: user.isFollowing
-                        ? Colors.white
+                        ? Theme.of(context).scaffoldBackgroundColor
                         : Theme.of(context).accentColor,
                   ),
                 ),
@@ -160,7 +159,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 print("${snapshot.error}");
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return PostLoadingShimmer();
+                return CircularProgressIndicator();
               }
               return Consumer<BlogProvider>(
                 builder: (_, blogPostData, __) =>
