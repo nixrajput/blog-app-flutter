@@ -14,8 +14,8 @@
 ## Screenshots
 
 <p>
-<img width="360px" src="Login_Page.jpg" alt="login-page"/>
-<img width="360px" src="Register_Page.jpg" alt="login-page"/></p>
+<img align="center" src="preview.jpg" alt="preview"/>
+</p>
 
 
 ## Connect With Me:
