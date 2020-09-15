@@ -13,7 +13,7 @@
 
 ## Screenshots
 
-<p>
+<p align="center">
 <img align="center" src="preview.png" alt="preview"/>
 </p>
 
