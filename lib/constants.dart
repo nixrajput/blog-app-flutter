@@ -1,11 +1,12 @@
+import 'package:blog_api_app/helpers/custom_route.dart';
 import 'package:flutter/material.dart';
-import 'package:webapp/helpers/custom_route.dart';
 
 const apiAccountUrl = 'https://nixlab-blog-api.herokuapp.com/account';
 const apiBlogUrl = 'https://nixlab-blog-api.herokuapp.com';
 
 final lightTheme = ThemeData(
-  scaffoldBackgroundColor: Color(0xFFFDFDFD),
+  scaffoldBackgroundColor: Color(0xFFFAFAFA),
+  primarySwatch: Colors.deepPurple,
   accentColor: Colors.deepPurple,
   cardColor: Colors.white,
   visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -15,21 +16,23 @@ final lightTheme = ThemeData(
       TargetPlatform.iOS: CustomPageTransitionBuilder(),
     },
   ),
+  brightness: Brightness.light,
 );
 
 final darkTheme = ThemeData(
-  scaffoldBackgroundColor: Color(0xFF121212),
-  accentColor: Colors.white,
+  scaffoldBackgroundColor: darkColor,
+  primarySwatch: lightColor,
+  accentColor: lightColor,
   cardColor: Colors.grey[850],
-  bottomAppBarColor: Color(0xFF121212),
+  bottomAppBarColor: darkColor,
   iconTheme: IconThemeData(color: Colors.white),
   buttonTheme: ButtonThemeData(
       buttonColor: Colors.white,
       focusColor: Colors.white,
       disabledColor: Colors.grey),
   bottomSheetTheme: BottomSheetThemeData(
-    backgroundColor: Color(0xFF121212),
-    modalBackgroundColor: Color(0xFF121212),
+    backgroundColor: darkColor,
+    modalBackgroundColor: darkColor,
   ),
   visualDensity: VisualDensity.adaptivePlatformDensity,
   pageTransitionsTheme: PageTransitionsTheme(
@@ -38,4 +41,35 @@ final darkTheme = ThemeData(
       TargetPlatform.iOS: CustomPageTransitionBuilder(),
     },
   ),
+  brightness: Brightness.dark,
 );
+
+Map<int, Color> dark = {
+  50: Color.fromRGBO(18, 18, 18, .1),
+  100: Color.fromRGBO(18, 18, 18, .2),
+  200: Color.fromRGBO(18, 18, 18, .3),
+  300: Color.fromRGBO(18, 18, 18, .4),
+  400: Color.fromRGBO(18, 18, 18, .5),
+  500: Color.fromRGBO(18, 18, 18, .6),
+  600: Color.fromRGBO(18, 18, 18, .7),
+  700: Color.fromRGBO(18, 18, 18, .8),
+  800: Color.fromRGBO(18, 18, 18, .9),
+  900: Color.fromRGBO(18, 18, 18, 1),
+};
+
+MaterialColor darkColor = MaterialColor(0xFF121212, dark);
+
+Map<int, Color> light = {
+  50: Color.fromRGBO(255, 255, 255, .1),
+  100: Color.fromRGBO(255, 255, 255, .2),
+  200: Color.fromRGBO(255, 255, 255, .3),
+  300: Color.fromRGBO(255, 255, 255, .4),
+  400: Color.fromRGBO(255, 255, 255, .5),
+  500: Color.fromRGBO(255, 255, 255, .6),
+  600: Color.fromRGBO(255, 255, 255, .7),
+  700: Color.fromRGBO(255, 255, 255, .8),
+  800: Color.fromRGBO(255, 255, 255, .9),
+  900: Color.fromRGBO(255, 255, 255, 1),
+};
+
+MaterialColor lightColor = MaterialColor(0xFFFFFFFF, light);

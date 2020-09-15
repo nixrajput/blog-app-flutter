@@ -1,14 +1,14 @@
 import 'dart:async';
 
+import 'package:blog_api_app/helpers/http_exception.dart';
+import 'package:blog_api_app/providers/auth_provider.dart';
+import 'package:blog_api_app/screens/home_screen.dart';
+import 'package:blog_api_app/screens/register_screen.dart';
+import 'package:blog_api_app/widgets/card/custom_body_card.dart';
+import 'package:blog_api_app/widgets/loaders/custom_loading_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/helpers/http_exception.dart';
-import 'package:webapp/providers/auth_provider.dart';
-import 'package:webapp/screens/home_screen.dart';
-import 'package:webapp/screens/register_screen.dart';
-import 'package:webapp/widgets/card/custom_body_card.dart';
-import 'package:webapp/widgets/loaders/custom_loading_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = 'login-screen';
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: Text(
                                         _obscureText ? "Show" : "Hide",
                                         style: TextStyle(
-                                          color: Colors.blueAccent,
+                                          color: Theme.of(context).accentColor,
                                         ),
                                       ),
                                     ),
@@ -187,7 +187,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           Text(
                             "Forgot Password?",
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.blue,
+                            ),
                           ),
                           SizedBox(
                             height: 20.0,

@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:blog_api_app/helpers/http_exception.dart';
+import 'package:blog_api_app/providers/auth_provider.dart';
+import 'package:blog_api_app/screens/login_screen.dart';
+import 'package:blog_api_app/widgets/card/custom_body_card.dart';
+import 'package:blog_api_app/widgets/loaders/custom_loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/helpers/http_exception.dart';
-import 'package:webapp/providers/auth_provider.dart';
-import 'package:webapp/screens/login_screen.dart';
-import 'package:webapp/widgets/card/custom_body_card.dart';
-import 'package:webapp/widgets/loaders/custom_loading_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = 'register-screen';
@@ -215,9 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       child: Text(
                                         _obscureText ? "Show" : "Hide",
                                         style: TextStyle(
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blueAccent,
+                                          color: Theme.of(context).accentColor,
                                         ),
                                       ),
                                     ),
@@ -254,9 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       child: Text(
                                         _obscureText ? "Show" : "Hide",
                                         style: TextStyle(
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blueAccent,
+                                          color: Theme.of(context).accentColor,
                                         ),
                                       ),
                                     ),
@@ -279,7 +275,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               vertical: 16.0,
                             ),
                             child: Text(
-                              "Next".toUpperCase(),
+                              "Signup".toUpperCase(),
                               style: TextStyle(
                                 color:
                                     Theme.of(context).scaffoldBackgroundColor,

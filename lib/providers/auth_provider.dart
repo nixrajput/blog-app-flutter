@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:blog_api_app/constants.dart';
+import 'package:blog_api_app/helpers/http_exception.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webapp/constants.dart';
-import 'package:webapp/helpers/http_exception.dart';
 
 class AuthProvider with ChangeNotifier {
   String _token;

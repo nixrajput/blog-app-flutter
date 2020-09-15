@@ -1,20 +1,20 @@
 import 'dart:io';
 
+import 'package:blog_api_app/providers/auth_provider.dart';
+import 'package:blog_api_app/providers/blog_provider.dart';
+import 'package:blog_api_app/providers/user_provider.dart';
+import 'package:blog_api_app/widgets/app_bar/custom_app_bar.dart';
+import 'package:blog_api_app/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:blog_api_app/widgets/choosers/custom_date_chooser.dart';
+import 'package:blog_api_app/widgets/common/custom_body_text.dart';
+import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
+import 'package:blog_api_app/widgets/post/post_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/providers/auth_provider.dart';
-import 'package:webapp/providers/blog_provider.dart';
-import 'package:webapp/providers/user_provider.dart';
-import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
-import 'package:webapp/widgets/bottom_sheet/bottom_sheet_button.dart';
-import 'package:webapp/widgets/choosers/custom_date_chooser.dart';
-import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
-import 'package:webapp/widgets/post/custom_body_text.dart';
-import 'package:webapp/widgets/post/post_item.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = "profile-screen";
@@ -158,9 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: "Birth Date",
           value: "${currentUserData.first.dob}",
         ),
-        Divider(
-          color: Theme.of(context).accentColor,
-        ),
+
         FutureBuilder(
           future: Provider.of<BlogProvider>(context, listen: false)
               .fetchUserBlogPost(auth.userId),

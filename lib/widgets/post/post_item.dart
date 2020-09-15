@@ -1,12 +1,12 @@
+import 'package:blog_api_app/providers/auth_provider.dart';
+import 'package:blog_api_app/providers/blog_provider.dart';
+import 'package:blog_api_app/screens/user_profile_screen.dart';
+import 'package:blog_api_app/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/providers/auth_provider.dart';
-import 'package:webapp/providers/blog_provider.dart';
-import 'package:webapp/screens/user_profile_screen.dart';
-import 'package:webapp/widgets/bottom_sheet/bottom_sheet_button.dart';
-import 'package:webapp/widgets/image_helper/rounded_network_image.dart';
 
 class BlogPostItem extends StatelessWidget {
   final String title;

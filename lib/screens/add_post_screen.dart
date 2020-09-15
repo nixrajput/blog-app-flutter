@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:blog_api_app/providers/blog_provider.dart';
+import 'package:blog_api_app/widgets/app_bar/custom_app_bar.dart';
+import 'package:blog_api_app/widgets/image_helper/image_picker.dart';
+import 'package:blog_api_app/widgets/loaders/custom_loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/providers/blog_provider.dart';
-import 'package:webapp/widgets/app_bar/custom_app_bar.dart';
-import 'package:webapp/widgets/image_helper/image_picker.dart';
-import 'package:webapp/widgets/loaders/custom_loading_screen.dart';
 
 class CreateBlogPost extends StatefulWidget {
   static const routeName = 'add-post-screen';

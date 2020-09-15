@@ -1,19 +1,20 @@
+import 'package:blog_api_app/constants.dart';
+import 'package:blog_api_app/providers/auth_provider.dart';
+import 'package:blog_api_app/providers/blog_provider.dart';
+import 'package:blog_api_app/providers/user_provider.dart';
+import 'package:blog_api_app/screens/add_post_screen.dart';
+import 'package:blog_api_app/screens/home_screen.dart';
+import 'package:blog_api_app/screens/login_screen.dart';
+import 'package:blog_api_app/screens/profile_screen.dart';
+import 'package:blog_api_app/screens/register_screen.dart';
+import 'package:blog_api_app/screens/settings_screen.dart';
+import 'package:blog_api_app/screens/splash_screen.dart';
+import 'package:blog_api_app/screens/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/constants.dart';
-import 'package:webapp/providers/auth_provider.dart';
-import 'package:webapp/providers/blog_provider.dart';
-import 'package:webapp/providers/user_provider.dart';
-import 'package:webapp/screens/add_post_screen.dart';
-import 'package:webapp/screens/home_screen.dart';
-import 'package:webapp/screens/login_screen.dart';
-import 'package:webapp/screens/profile_screen.dart';
-import 'package:webapp/screens/register_screen.dart';
-import 'package:webapp/screens/settings_screen.dart';
-import 'package:webapp/screens/splash_screen.dart';
-import 'package:webapp/screens/user_profile_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -47,16 +48,11 @@ class MyApp extends StatelessWidget {
                 ),
           ),
           darkTheme: darkTheme.copyWith(
-              textTheme: Theme.of(context).textTheme.apply(
-                    bodyColor: Colors.white,
-                    displayColor: Colors.white,
-                  ),
-              inputDecorationTheme:
-                  Theme.of(context).inputDecorationTheme.copyWith(
-                        labelStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                      )),
+            textTheme: Theme.of(context).textTheme.apply(
+                  bodyColor: lightColor,
+                  displayColor: lightColor,
+                ),
+          ),
           home: auth.isAuth
               ? HomeScreen()
               : FutureBuilder(

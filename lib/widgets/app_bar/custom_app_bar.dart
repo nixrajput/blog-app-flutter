@@ -1,3 +1,4 @@
+import 'package:blog_api_app/widgets/common/custom_divider.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -12,42 +13,44 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0.0, 4.0),
-            blurRadius: 8.0,
-            color: Colors.grey.withOpacity(0.4),
-          )
-        ],
-      ),
-      padding: const EdgeInsets.all(10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(
-                  mainIcon,
-                  size: 32.0,
-                  color: Theme.of(context).accentColor,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 16.0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        mainIcon,
+                        size: 32.0,
+                        color: Theme.of(context).accentColor,
+                      ),
+                      onPressed: onPressed,
+                    ),
+                    SizedBox(width: 10.0),
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).accentColor),
+                    )
+                  ],
                 ),
-                onPressed: onPressed,
-              ),
-              SizedBox(width: 10.0),
-              Text(
-                title,
-                style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).accentColor),
-              )
-            ],
+                actions
+              ],
+            ),
           ),
-          actions
+          CustomDivider(),
         ],
       ),
     );

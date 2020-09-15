@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:blog_api_app/providers/blog_provider.dart';
+import 'package:blog_api_app/widgets/loaders/custom_loading_screen.dart';
+import 'package:blog_api_app/widgets/post/post_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp/providers/blog_provider.dart';
-import 'package:webapp/widgets/loaders/custom_loading_screen.dart';
-import 'package:webapp/widgets/post/post_item.dart';
 
 class HomeView extends StatefulWidget {
   @override

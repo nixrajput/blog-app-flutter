@@ -1,4 +1,4 @@
-name: webapp
+name: blog_api_app
 description: A new Flutter application.
 
 publish_to: 'none'

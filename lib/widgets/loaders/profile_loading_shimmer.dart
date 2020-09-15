@@ -1,5 +1,5 @@
+import 'package:blog_api_app/widgets/loaders/shimmer_loading_effect.dart';
 import 'package:flutter/material.dart';
-import 'package:webapp/widgets/loaders/shimmer_loading_effect.dart';
 
 class ProfileLoadingShimmer extends StatelessWidget {
   final double width;
