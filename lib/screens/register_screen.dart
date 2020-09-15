@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:webapp/helpers/http_exception.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/screens/login_screen.dart';
+import 'package:webapp/widgets/card/custom_body_card.dart';
+import 'package:webapp/widgets/loaders/custom_loading_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = 'register-screen';
@@ -86,26 +88,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
   }
 
-  Widget loadingScreen() {
-    return Container(
-      width: 60.0,
-      height: 60.0,
-      decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0.0, 0.0),
-              blurRadius: 20.0,
-              color: Colors.grey.withOpacity(0.5),
-            )
-          ]),
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,9 +96,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: _isLoading
-              ? loadingScreen()
-              : Card(
-                  elevation: 8.0,
+              ? CustomLoadingScreen()
+              : CustomBodyCard(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 20.0,
@@ -151,7 +132,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             "Sign Up".toUpperCase(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,
                             ),
@@ -301,16 +281,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: Text(
                               "Next".toUpperCase(),
                               style: TextStyle(
-                                color: Colors.white,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             color: Theme.of(context).accentColor,
                           ),
                           SizedBox(
-                            height: 5.0,
+                            height: 10.0,
                           ),
                           FlatButton(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                            ),
                             onPressed: () {
                               Navigator.pushReplacementNamed(
                                   context, LoginScreen.routeName);
@@ -321,7 +305,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Theme.of(context).accentColor,
                                   fontWeight: FontWeight.bold),
                             ),
-                          )
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                          ),
                         ],
                       ),
                     ),

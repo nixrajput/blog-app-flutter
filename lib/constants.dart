@@ -7,6 +7,7 @@ const apiBlogUrl = 'https://nixlab-blog-api.herokuapp.com';
 final lightTheme = ThemeData(
   scaffoldBackgroundColor: Color(0xFFFDFDFD),
   accentColor: Colors.deepPurple,
+  cardColor: Colors.white,
   visualDensity: VisualDensity.adaptivePlatformDensity,
   pageTransitionsTheme: PageTransitionsTheme(
     builders: {
@@ -19,9 +20,8 @@ final lightTheme = ThemeData(
 final darkTheme = ThemeData(
   scaffoldBackgroundColor: Color(0xFF121212),
   accentColor: Colors.white,
-  primaryTextTheme: TextTheme(
-      bodyText1: TextStyle(color: Colors.white),
-      bodyText2: TextStyle(color: Colors.white)),
+  cardColor: Colors.grey[850],
+  bottomAppBarColor: Color(0xFF121212),
   iconTheme: IconThemeData(color: Colors.white),
   buttonTheme: ButtonThemeData(
       buttonColor: Colors.white,

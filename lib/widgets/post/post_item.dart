@@ -133,15 +133,25 @@ class BlogPostItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final screenSize = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        postHead(context, auth),
-        postBody(context, screenSize),
-        postBottom(context),
-        Divider(
-          color: Theme.of(context).accentColor,
-        )
-      ],
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0.0, 4.0),
+            blurRadius: 16.0,
+            color: Colors.grey.shade700.withOpacity(0.4),
+          )
+        ],
+      ),
+      child: Column(
+        children: [
+          postHead(context, auth),
+          postBody(context, screenSize),
+          postBottom(context),
+        ],
+      ),
     );
   }
 

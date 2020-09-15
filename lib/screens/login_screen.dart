@@ -7,6 +7,8 @@ import 'package:webapp/helpers/http_exception.dart';
 import 'package:webapp/providers/auth_provider.dart';
 import 'package:webapp/screens/home_screen.dart';
 import 'package:webapp/screens/register_screen.dart';
+import 'package:webapp/widgets/card/custom_body_card.dart';
+import 'package:webapp/widgets/loaders/custom_loading_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = 'login-screen';
@@ -66,27 +68,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Widget loadingScreen() {
-    return Container(
-      width: 60.0,
-      height: 60.0,
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0.0, 0.0),
-            blurRadius: 20.0,
-            color: Colors.grey.withOpacity(0.5),
-          )
-        ],
-      ),
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     //final deviceSize = MediaQuery.of(context).size;
@@ -96,9 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: _isLoading
-              ? loadingScreen()
-              : Card(
-                  elevation: 8.0,
+              ? CustomLoadingScreen()
+              : CustomBodyCard(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 20.0,
@@ -133,7 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             "Sign In".toUpperCase(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,
                             ),
@@ -223,16 +202,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               "Login".toUpperCase(),
                               style: TextStyle(
-                                color: Colors.white,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             color: Theme.of(context).accentColor,
                           ),
                           SizedBox(
-                            height: 5.0,
+                            height: 10.0,
                           ),
                           FlatButton(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16.0,
+                            ),
                             onPressed: () {
                               Navigator.pushReplacementNamed(
                                   context, RegisterScreen.routeName);

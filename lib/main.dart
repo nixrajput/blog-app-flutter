@@ -40,8 +40,23 @@ class MyApp extends StatelessWidget {
         builder: (_, auth, __) => MaterialApp(
           title: 'BlogAPI',
           debugShowCheckedModeBanner: false,
-          theme: lightTheme,
-          darkTheme: darkTheme,
+          theme: lightTheme.copyWith(
+            textTheme: Theme.of(context).textTheme.apply(
+                  bodyColor: Colors.black,
+                  displayColor: Colors.black,
+                ),
+          ),
+          darkTheme: darkTheme.copyWith(
+              textTheme: Theme.of(context).textTheme.apply(
+                    bodyColor: Colors.white,
+                    displayColor: Colors.white,
+                  ),
+              inputDecorationTheme:
+                  Theme.of(context).inputDecorationTheme.copyWith(
+                        labelStyle: TextStyle(
+                          color: Colors.white,
+                        ),
+                      )),
           home: auth.isAuth
               ? HomeScreen()
               : FutureBuilder(
