@@ -18,10 +18,7 @@ class CustomAppBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 16.0,
-            ),
+            padding: const EdgeInsets.all(10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
@@ -31,7 +28,7 @@ class CustomAppBar extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         mainIcon,
-                        size: 32.0,
+                        size: 30.0,
                         color: Theme.of(context).accentColor,
                       ),
                       onPressed: onPressed,

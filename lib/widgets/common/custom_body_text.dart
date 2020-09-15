@@ -29,7 +29,7 @@ class CustomBodyText extends StatelessWidget {
               color: Colors.grey,
             ),
           ),
-          SizedBox(width: 20.0),
+          SizedBox(width: 10.0),
           Text(
             "$value",
             overflow: TextOverflow.ellipsis,

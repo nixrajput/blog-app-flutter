@@ -5,6 +5,7 @@ import 'package:blog_api_app/providers/blog_provider.dart';
 import 'package:blog_api_app/providers/user_provider.dart';
 import 'package:blog_api_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:blog_api_app/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:blog_api_app/widgets/card/followers_card.dart';
 import 'package:blog_api_app/widgets/choosers/custom_date_chooser.dart';
 import 'package:blog_api_app/widgets/common/custom_body_text.dart';
 import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
@@ -67,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ? IconButton(
             icon: Icon(
               Icons.save,
-              size: 32.0,
+              size: 30.0,
               color: Theme.of(context).accentColor,
             ),
             onPressed: () {
@@ -77,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : IconButton(
             icon: Icon(
               Icons.edit,
-              size: 32.0,
+              size: 30.0,
               color: Theme.of(context).accentColor,
             ),
             onPressed: () {
@@ -141,11 +142,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         SizedBox(height: 20.0),
         _imageArea(context, currentUserData.first),
         SizedBox(height: 20.0),
-        CustomBodyText(
-          title: "Name",
-          value:
-              "${currentUserData.first.firstName} ${currentUserData.first.lastName}",
+        Text(
+          "${currentUserData.first.firstName} ${currentUserData.first.lastName}",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).accentColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+            fontFamily: "Raleway",
+          ),
         ),
+        SizedBox(height: 20.0),
         CustomBodyText(
           title: "Email",
           value: "${currentUserData.first.email}",
@@ -158,7 +165,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: "Birth Date",
           value: "${currentUserData.first.dob}",
         ),
-
+        FollowersCard(
+          followers: "9995",
+          following: "87565",
+        ),
+        SizedBox(height: 10.0),
         FutureBuilder(
           future: Provider.of<BlogProvider>(context, listen: false)
               .fetchUserBlogPost(auth.userId),

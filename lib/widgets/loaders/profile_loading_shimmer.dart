@@ -12,11 +12,8 @@ class ProfileLoadingShimmer extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ShimmerLoadingWidget(
-            width: width,
-            height: 50.0,
-          ),
           SizedBox(height: 10.0),
           ShimmerLoadingWidget(
             width: 200.0,

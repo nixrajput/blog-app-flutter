@@ -2,6 +2,7 @@ import 'package:blog_api_app/providers/auth_provider.dart';
 import 'package:blog_api_app/providers/blog_provider.dart';
 import 'package:blog_api_app/providers/user_provider.dart';
 import 'package:blog_api_app/widgets/app_bar/custom_app_bar.dart';
+import 'package:blog_api_app/widgets/card/followers_card.dart';
 import 'package:blog_api_app/widgets/common/custom_body_text.dart';
 import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
 import 'package:blog_api_app/widgets/loaders/profile_loading_shimmer.dart';
@@ -147,8 +148,9 @@ class _UserProfileScreenState extends State<UserProfileScreen>
             title: "Email",
             value: "${user.email}",
           ),
-          Divider(
-            color: Colors.grey,
+          FollowersCard(
+            followers: "9995",
+            following: "87565",
           ),
           SizedBox(height: 10.0),
           FutureBuilder(
