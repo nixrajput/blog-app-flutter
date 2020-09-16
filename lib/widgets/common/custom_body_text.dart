@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CustomBodyText extends StatelessWidget {
-  final String title;
+  final IconData icon;
   final String value;
 
-  const CustomBodyText({this.title, this.value});
+  const CustomBodyText({this.icon, this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +20,9 @@ class CustomBodyText extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(
-            "$title",
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-              color: Colors.grey,
-            ),
+          Icon(
+            icon,
+            color: Colors.grey[600],
           ),
           SizedBox(width: 10.0),
           Text(

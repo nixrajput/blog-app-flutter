@@ -14,6 +14,7 @@ class CustomLoadingScreen extends StatelessWidget {
               color: Theme.of(context).accentColor,
               fontWeight: FontWeight.w900,
               fontSize: 32.0,
+              fontFamily: "Kaushan Script",
             ),
           ),
           Text(
@@ -23,6 +24,7 @@ class CustomLoadingScreen extends StatelessWidget {
               color: Colors.grey,
               fontSize: 14.0,
               fontWeight: FontWeight.bold,
+              fontFamily: "Kaushan Script",
             ),
           ),
           SizedBox(

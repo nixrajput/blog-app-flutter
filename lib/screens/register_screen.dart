@@ -114,7 +114,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: TextStyle(
                               color: Theme.of(context).accentColor,
                               fontWeight: FontWeight.w900,
-                              fontSize: 40.0,
+                              fontSize: 36.0,
+                              fontFamily: "Kaushan Script",
                             ),
                           ),
                           Text(
@@ -123,6 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
+                              fontFamily: "Kaushan Script",
                             ),
                           ),
                           SizedBox(
@@ -134,6 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,
+                              fontFamily: "Alata",
                             ),
                           ),
                           SizedBox(

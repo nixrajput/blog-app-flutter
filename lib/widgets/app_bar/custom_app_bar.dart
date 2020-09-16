@@ -18,7 +18,10 @@ class CustomAppBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.symmetric(
+              vertical: 4.0,
+              horizontal: 10.0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
@@ -28,17 +31,16 @@ class CustomAppBar extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         mainIcon,
-                        size: 30.0,
                         color: Theme.of(context).accentColor,
                       ),
                       onPressed: onPressed,
                     ),
-                    SizedBox(width: 10.0),
                     Text(
                       title,
                       style: TextStyle(
-                          fontSize: 24.0,
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold,
+                          fontFamily: "Raleway",
                           color: Theme.of(context).accentColor),
                     )
                   ],

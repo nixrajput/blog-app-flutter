@@ -34,15 +34,14 @@ class MainAppBar extends StatelessWidget {
               username,
               style: TextStyle(
                 fontSize: 20.0,
-                fontFamily: "Raleway",
+                fontFamily: "Alata",
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).accentColor,
               ),
             ),
           ),
-          Divider(
-            color: Theme.of(context).accentColor,
-          ),
+          SizedBox(height: 10.0),
+          CustomDivider(),
           BottomSheetButton(
             icon: Icons.person_outline,
             title: "Profile",
@@ -84,8 +83,8 @@ class MainAppBar extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 16.0,
+              vertical: 4.0,
+              horizontal: 10.0,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,9 +93,11 @@ class MainAppBar extends StatelessWidget {
                 Text(
                   "BlogAPI",
                   style: TextStyle(
-                      color: Theme.of(context).accentColor,
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.w800),
+                    color: Theme.of(context).accentColor,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: "Kaushan Script",
+                  ),
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -111,7 +112,7 @@ class MainAppBar extends StatelessWidget {
                         Navigator.pushNamed(context, CreateBlogPost.routeName);
                       },
                     ),
-                    SizedBox(width: 20.0),
+                    SizedBox(width: 16.0),
                     Consumer<UserDataProvider>(
                       builder: (_, userData, __) => GestureDetector(
                         onTap: () {

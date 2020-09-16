@@ -68,7 +68,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ? IconButton(
             icon: Icon(
               Icons.save,
-              size: 30.0,
               color: Theme.of(context).accentColor,
             ),
             onPressed: () {
@@ -78,7 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : IconButton(
             icon: Icon(
               Icons.edit,
-              size: 30.0,
               color: Theme.of(context).accentColor,
             ),
             onPressed: () {
@@ -152,22 +150,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontFamily: "Raleway",
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: TextField(
+            maxLength: 150,
+            maxLengthEnforced: true,
+            decoration: InputDecoration(hintText: "About"),
+          ),
+        ),
         SizedBox(height: 20.0),
         CustomBodyText(
-          title: "Email",
+          icon: Icons.email_outlined,
           value: "${currentUserData.first.email}",
         ),
         CustomBodyText(
-          title: "Phone",
+          icon: Icons.local_phone_outlined,
           value: "${currentUserData.first.phone}",
         ),
         CustomBodyText(
-          title: "Birth Date",
+          icon: Icons.calendar_today_outlined,
           value: "${currentUserData.first.dob}",
         ),
         FollowersCard(
           followers: "9995",
-          following: "87565",
+          following: "7565",
         ),
         SizedBox(height: 10.0),
         FutureBuilder(

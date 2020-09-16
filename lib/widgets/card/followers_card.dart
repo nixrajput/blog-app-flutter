@@ -13,7 +13,11 @@ class FollowersCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+      padding: const EdgeInsets.only(
+        bottom: 10.0,
+        left: 10.0,
+        right: 10.0,
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -29,11 +33,12 @@ class FollowersCard extends StatelessWidget {
                   fontFamily: "Raleway",
                 ),
               ),
-              SizedBox(width: 8.0),
+              SizedBox(width: 4.0),
               Text(
                 "Followers",
                 style: TextStyle(
                   color: Colors.grey,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -49,11 +54,12 @@ class FollowersCard extends StatelessWidget {
                   fontFamily: "Raleway",
                 ),
               ),
-              SizedBox(width: 8.0),
+              SizedBox(width: 4.0),
               Text(
                 "Following",
                 style: TextStyle(
                   color: Colors.grey,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

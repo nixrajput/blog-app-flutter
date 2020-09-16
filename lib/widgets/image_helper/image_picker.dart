@@ -30,9 +30,9 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
           compressFormat: ImageCompressFormat.jpg,
           androidUiSettings: AndroidUiSettings(
-              toolbarColor: Theme.of(context).canvasColor,
+              toolbarColor: Theme.of(context).scaffoldBackgroundColor,
               toolbarTitle: "Crop Image",
-              backgroundColor: Theme.of(context).canvasColor),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor),
           iosUiSettings: IOSUiSettings(
             title: "Crop Image",
             minimumAspectRatio: 1.0,

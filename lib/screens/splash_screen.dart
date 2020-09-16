@@ -17,6 +17,7 @@ class SplashScreen extends StatelessWidget {
                 color: Theme.of(context).accentColor,
                 fontWeight: FontWeight.w900,
                 fontSize: 40.0,
+                fontFamily: "Kaushan Script",
               ),
             ),
             Text(
@@ -24,11 +25,10 @@ class SplashScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.grey,
+                fontSize: 18.0,
                 fontWeight: FontWeight.bold,
+                fontFamily: "Kaushan Script",
               ),
-            ),
-            SizedBox(
-              height: 40.0,
             ),
           ],
         ),

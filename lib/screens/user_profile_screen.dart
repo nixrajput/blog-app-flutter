@@ -3,7 +3,6 @@ import 'package:blog_api_app/providers/blog_provider.dart';
 import 'package:blog_api_app/providers/user_provider.dart';
 import 'package:blog_api_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:blog_api_app/widgets/card/followers_card.dart';
-import 'package:blog_api_app/widgets/common/custom_body_text.dart';
 import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
 import 'package:blog_api_app/widgets/loaders/profile_loading_shimmer.dart';
 import 'package:blog_api_app/widgets/post/post_item.dart';
@@ -27,7 +26,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       tooltip: "More",
       icon: Icon(
         Icons.more_vert_rounded,
-        size: 32.0,
         color: Theme.of(context).accentColor,
       ),
       onPressed: () {},
@@ -98,6 +96,17 @@ class _UserProfileScreenState extends State<UserProfileScreen>
             strokeColor: Theme.of(context).accentColor,
           ),
           SizedBox(height: 20.0),
+          Text(
+            "${user.firstName} ${user.lastName}",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).accentColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+              fontFamily: "Raleway",
+            ),
+          ),
+          SizedBox(height: 10.0),
           if (_userId != auth.userId)
             Consumer<UserDataProvider>(
               builder: (_, _userData, __) => RaisedButton(
@@ -139,76 +148,70 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
-          SizedBox(height: 20.0),
-          CustomBodyText(
-            title: "Name",
-            value: "${user.firstName} ${user.lastName}",
-          ),
-          CustomBodyText(
-            title: "Email",
-            value: "${user.email}",
-          ),
+          if (_userId != auth.userId) SizedBox(height: 20.0),
           FollowersCard(
             followers: "9995",
-            following: "87565",
+            following: "8565",
           ),
           SizedBox(height: 10.0),
-          FutureBuilder(
-            future: Provider.of<BlogProvider>(context, listen: false)
-                .fetchUserBlogPost(_userId),
-            builder: (_, snapshot) {
-              if (snapshot.hasError) {
-                print("${snapshot.error}");
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              return Consumer<BlogProvider>(
-                builder: (_, blogPostData, __) =>
-                    blogPostData.blogPosts.length > 0
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            itemCount: blogPostData.blogPosts.length,
-                            itemBuilder: (ctx, i) => BlogPostItem(
-                              title: blogPostData.blogPosts[i].title,
-                              body: blogPostData.blogPosts[i].body,
-                              imageUrl: blogPostData.blogPosts[i].imageUrl,
-                              slug: blogPostData.blogPosts[i].slug,
-                              author: blogPostData.blogPosts[i].author,
-                              authorId: blogPostData.blogPosts[i].authorId,
-                              profilePicUrl: user.image,
-                              likeCount: blogPostData.blogPosts[i].likes.length
-                                  .toString(),
-                              isLiked: blogPostData.blogPosts[i].isLiked,
-                              timestamp: TimeAgo.getTimeAgo(DateTime.parse(
-                                  blogPostData.blogPosts[i].timestamp)),
-                            ),
-                          )
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  size: 48.0,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(height: 10.0),
-                                Text(
-                                  "No post available.",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18.0,
+          if (user.isFollowing || _userId == auth.userId)
+            FutureBuilder(
+              future: Provider.of<BlogProvider>(context, listen: false)
+                  .fetchUserBlogPost(_userId),
+              builder: (_, snapshot) {
+                if (snapshot.hasError) {
+                  print("${snapshot.error}");
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+                return Consumer<BlogProvider>(
+                  builder: (_, blogPostData, __) =>
+                      blogPostData.blogPosts.length > 0
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: ScrollPhysics(),
+                              itemCount: blogPostData.blogPosts.length,
+                              itemBuilder: (ctx, i) => BlogPostItem(
+                                title: blogPostData.blogPosts[i].title,
+                                body: blogPostData.blogPosts[i].body,
+                                imageUrl: blogPostData.blogPosts[i].imageUrl,
+                                slug: blogPostData.blogPosts[i].slug,
+                                author: blogPostData.blogPosts[i].author,
+                                authorId: blogPostData.blogPosts[i].authorId,
+                                profilePicUrl: user.image,
+                                likeCount: blogPostData
+                                    .blogPosts[i].likes.length
+                                    .toString(),
+                                isLiked: blogPostData.blogPosts[i].isLiked,
+                                timestamp: TimeAgo.getTimeAgo(DateTime.parse(
+                                    blogPostData.blogPosts[i].timestamp)),
+                              ),
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    size: 48.0,
                                     color: Colors.grey,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 10.0),
+                                  Text(
+                                    "No post available.",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-              );
-            },
-          ),
+                );
+              },
+            ),
         ],
       ),
     );
