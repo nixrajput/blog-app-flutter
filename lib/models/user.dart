@@ -9,6 +9,8 @@ class User with ChangeNotifier {
   final String phone;
   final String image;
   final String dob;
+  final String accountType;
+  final String about;
   final List<dynamic> followers;
   final List<dynamic> following;
   bool isFollowing;
@@ -22,6 +24,8 @@ class User with ChangeNotifier {
     this.phone,
     this.image,
     this.dob,
+    this.accountType,
+    this.about,
     this.followers,
     this.following,
     this.isFollowing,

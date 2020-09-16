@@ -1,7 +1,7 @@
 import 'package:blog_api_app/providers/auth_provider.dart';
 import 'package:blog_api_app/providers/blog_provider.dart';
 import 'package:blog_api_app/screens/user_profile_screen.dart';
-import 'package:blog_api_app/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:blog_api_app/widgets/buttons/bottom_sheet_button.dart';
 import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -236,8 +236,8 @@ class BlogPostItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(
               top: 10.0,
-              left: 20.0,
-              right: 20.0,
+              left: 16.0,
+              right: 16.0,
             ),
             child: Text(
               body,
@@ -277,6 +277,10 @@ class BlogPostItem extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            padding: const EdgeInsets.only(
+              top: 16.0,
+              bottom: 16.0,
+            ),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           FlatButton.icon(
@@ -293,6 +297,10 @@ class BlogPostItem extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            padding: const EdgeInsets.only(
+              top: 16.0,
+              bottom: 16.0,
+            ),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           FlatButton.icon(
@@ -308,6 +316,10 @@ class BlogPostItem extends StatelessWidget {
                 color: Theme.of(context).accentColor,
                 fontWeight: FontWeight.bold,
               ),
+            ),
+            padding: const EdgeInsets.only(
+              top: 16.0,
+              bottom: 16.0,
             ),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),

@@ -4,7 +4,7 @@ import 'package:blog_api_app/screens/add_post_screen.dart';
 import 'package:blog_api_app/screens/login_screen.dart';
 import 'package:blog_api_app/screens/profile_screen.dart';
 import 'package:blog_api_app/screens/settings_screen.dart';
-import 'package:blog_api_app/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:blog_api_app/widgets/buttons/bottom_sheet_button.dart';
 import 'package:blog_api_app/widgets/common/custom_divider.dart';
 import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
 import 'package:flutter/material.dart';

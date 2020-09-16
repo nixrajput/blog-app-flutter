@@ -4,7 +4,7 @@ import 'package:blog_api_app/providers/auth_provider.dart';
 import 'package:blog_api_app/providers/blog_provider.dart';
 import 'package:blog_api_app/providers/user_provider.dart';
 import 'package:blog_api_app/widgets/app_bar/custom_app_bar.dart';
-import 'package:blog_api_app/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:blog_api_app/widgets/buttons/bottom_sheet_button.dart';
 import 'package:blog_api_app/widgets/card/followers_card.dart';
 import 'package:blog_api_app/widgets/choosers/custom_date_chooser.dart';
 import 'package:blog_api_app/widgets/common/custom_body_text.dart';
@@ -31,6 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var _lastName;
   var _phone;
   var _dob;
+  var _about;
   File _userImageFile;
   var _isLoading = false;
   var _isEditing = false;
@@ -45,17 +46,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (_pickedImage != null) {
       File _croppedFile = await ImageCropper.cropImage(
-          sourcePath: _pickedImage.path,
-          aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-          compressFormat: ImageCompressFormat.jpg,
-          androidUiSettings: AndroidUiSettings(
-              toolbarColor: Theme.of(context).canvasColor,
-              toolbarTitle: "Crop Image",
-              backgroundColor: Theme.of(context).canvasColor),
-          iosUiSettings: IOSUiSettings(
-            title: "Crop Image",
-            minimumAspectRatio: 1.0,
-          ));
+        sourcePath: _pickedImage.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(
+          toolbarColor: Theme.of(context).scaffoldBackgroundColor,
+          toolbarTitle: "Crop Image",
+          toolbarWidgetColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        ),
+        iosUiSettings: IOSUiSettings(
+          title: "Crop Image",
+          minimumAspectRatio: 1.0,
+        ),
+      );
 
       setState(() {
         _userImageFile = _croppedFile;
@@ -150,12 +154,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontFamily: "Raleway",
           ),
         ),
+        SizedBox(height: 20.0),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: TextField(
-            maxLength: 150,
-            maxLengthEnforced: true,
-            decoration: InputDecoration(hintText: "About"),
+          child: Text(
+            currentUserData.first.about == null ||
+                    currentUserData.first.about == ''
+                ? "Write something about you..."
+                : "${currentUserData.first.about}",
+            style: TextStyle(
+              fontFamily: "Alata",
+              fontSize: 16.0,
+              color: Colors.grey,
+            ),
           ),
         ),
         SizedBox(height: 20.0),
@@ -168,9 +179,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           value: "${currentUserData.first.phone}",
         ),
         CustomBodyText(
-          icon: Icons.calendar_today_outlined,
-          value: "${currentUserData.first.dob}",
-        ),
+            icon: Icons.calendar_today_outlined,
+            value: DateFormat('dd-MMM-y').format(
+              DateTime.parse("${currentUserData.first.dob}"),
+            )),
         FollowersCard(
           followers: "9995",
           following: "7565",
@@ -282,6 +294,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _lastName,
           _phone,
           _dob,
+          _about,
           DateTime.now().toString(),
         )
             .then((_) {
@@ -397,15 +410,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
               valueText: _dob == null
                   ? (currentUserData.first.dob == null
                       ? 'Select Date'
-                      : currentUserData.first.dob)
-                  : _dob,
+                      : DateFormat('dd-MMM-y')
+                          .format(DateTime.parse(currentUserData.first.dob)))
+                  : DateFormat('dd-MMM-y').format(DateTime.parse(_dob)),
               onPressed: _selectDate,
+            ),
+            SizedBox(height: 10.0),
+            TextFormField(
+              initialValue: currentUserData.first.about == null ||
+                      currentUserData.first.about == ''
+                  ? 'Write about you here...'
+                  : "${currentUserData.first.about}",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).accentColor),
+              key: ValueKey('about'),
+              validator: (value) {
+                if (value.length > 150) {
+                  return "Character limit exceeded!";
+                } else if (value.trim() == 'Write about you here...') {
+                  return "Write something about you first!";
+                } else if (value.trim() == '') {
+                  return "Write something about you first!";
+                }
+                return null;
+              },
+              maxLength: 150,
+              maxLines: 3,
+              decoration: InputDecoration(
+                labelText: "Bio",
+                errorMaxLines: 2,
+              ),
+              onSaved: (value) {
+                _about = value.trim();
+              },
             )
+            // SizedBox(height: 10.0),
+            // DropdownButtonFormField(
+            //   value: _accountType,
+            //   hint: Text("Account Type"),
+            //   items: _accountTypes
+            //       .map((title) => DropdownMenuItem(
+            //             child: Text(title.toString().toUpperCase()),
+            //             value: title,
+            //           ))
+            //       .toList(),
+            //   onChanged: (value) {
+            //     print(value);
+            //     _accountType = value;
+            //   },
+            // ),
+            // InputDatePickerFormField(
+            //   initialDate: DateTime.now(),
+            //   firstDate: DateTime(1900),
+            //   lastDate: DateTime.now(),
+            // )
           ],
         ),
       ),
     );
   }
+
+  List<String> _accountTypes = ["public", "private"];
 
   void _uploadProfilePicture() async {
     if (_userImageFile == null) {

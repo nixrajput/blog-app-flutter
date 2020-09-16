@@ -51,6 +51,8 @@ class UserDataProvider with ChangeNotifier {
           image: responseData['profile_picture']['image'],
           followers: responseData['followers'],
           following: responseData['following'],
+          accountType: responseData['account_type'],
+          about: responseData['about'],
         ),
       );
       _currentUserData = _fetchUserData;
@@ -97,6 +99,8 @@ class UserDataProvider with ChangeNotifier {
           username: responseData['username'],
           dob: responseData['dob'],
           phone: responseData['phone'],
+          accountType: responseData['account_type'],
+          about: responseData['about'],
           image: responseData['profile_picture']['image'],
           followers: responseData['followers'],
           following: responseData['following'],
@@ -178,6 +182,7 @@ class UserDataProvider with ChangeNotifier {
     String lastName,
     String phone,
     String dob,
+    String about,
     String timestamp,
   ) async {
     final response = await http.put(
@@ -191,6 +196,7 @@ class UserDataProvider with ChangeNotifier {
         'last_name': lastName,
         'phone': phone,
         'dob': dob,
+        'about': about,
         'timestamp': timestamp,
       }),
     );

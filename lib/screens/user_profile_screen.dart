@@ -106,7 +106,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               fontFamily: "Raleway",
             ),
           ),
-          SizedBox(height: 10.0),
+          SizedBox(height: 20.0),
           if (_userId != auth.userId)
             Consumer<UserDataProvider>(
               builder: (_, _userData, __) => RaisedButton(
@@ -148,13 +148,29 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
+          SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              user.about == null || user.about == ''
+                  ? "Write something about you..."
+                  : "${user.about}",
+              style: TextStyle(
+                fontFamily: "Alata",
+                fontSize: 16.0,
+                color: Colors.grey,
+              ),
+            ),
+          ),
           if (_userId != auth.userId) SizedBox(height: 20.0),
           FollowersCard(
             followers: "9995",
             following: "8565",
           ),
           SizedBox(height: 10.0),
-          if (user.isFollowing || _userId == auth.userId)
+          if (user.isFollowing ||
+              _userId == auth.userId ||
+              user.accountType == "public")
             FutureBuilder(
               future: Provider.of<BlogProvider>(context, listen: false)
                   .fetchUserBlogPost(_userId),

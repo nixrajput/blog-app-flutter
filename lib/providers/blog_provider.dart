@@ -122,6 +122,31 @@ class BlogProvider with ChangeNotifier {
     final allExistingProductIndex =
         _allBlogPosts.indexWhere((post) => post.slug == slug);
 
+    if (_allBlogPosts.isNotEmpty) {
+      if (_allBlogPosts
+          .elementAt(allExistingProductIndex)
+          .likes
+          .contains(_userId)) {
+        _allBlogPosts.elementAt(allExistingProductIndex).likes.remove(_userId);
+        _allBlogPosts.elementAt(allExistingProductIndex).isLiked = false;
+      } else {
+        _allBlogPosts.elementAt(allExistingProductIndex).likes.add(_userId);
+        _allBlogPosts.elementAt(allExistingProductIndex).isLiked = true;
+      }
+    }
+
+    if (_blogPosts.isNotEmpty) {
+      if (_blogPosts.elementAt(existingProductIndex).likes.contains(_userId)) {
+        _blogPosts.elementAt(existingProductIndex).likes.remove(_userId);
+        _blogPosts.elementAt(existingProductIndex).isLiked = false;
+      } else {
+        _blogPosts.elementAt(existingProductIndex).likes.add(_userId);
+        _blogPosts.elementAt(existingProductIndex).isLiked = true;
+      }
+    }
+
+    notifyListeners();
+
     final response = await http.get(
       '$apiBlogUrl/$slug/like',
       headers: <String, String>{
@@ -133,6 +158,9 @@ class BlogProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final responseData = json.decode(utf8.decode(response.bodyBytes));
       print(responseData);
+    } else {
+      final errorData = json.decode(utf8.decode(response.bodyBytes));
+      print(errorData);
 
       if (_allBlogPosts.isNotEmpty) {
         if (_allBlogPosts
@@ -164,9 +192,7 @@ class BlogProvider with ChangeNotifier {
       }
 
       notifyListeners();
-    } else {
-      final errorData = json.decode(utf8.decode(response.bodyBytes));
-      print(errorData);
+
       throw HttpException(errorData['response']);
     }
   }

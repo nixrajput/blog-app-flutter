@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:blog_api_app/widgets/bottom_sheet/bottom_sheet_button.dart';
+import 'package:blog_api_app/widgets/buttons/bottom_sheet_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,6 +32,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
           androidUiSettings: AndroidUiSettings(
               toolbarColor: Theme.of(context).scaffoldBackgroundColor,
               toolbarTitle: "Crop Image",
+              toolbarWidgetColor: Theme.of(context).accentColor,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor),
           iosUiSettings: IOSUiSettings(
             title: "Crop Image",
@@ -108,7 +109,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             child: Container(
               width: double.infinity,
               height: MediaQuery.of(context).size.height / 2,
-              color: Colors.grey.shade300,
+              color: Colors.grey[600],
               child: Center(
                 child: FlatButton.icon(
                   onPressed: () {
@@ -116,8 +117,9 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
                   },
                   icon: Icon(
                     Icons.image,
+                    color: Theme.of(context).accentColor,
                   ),
-                  textColor: Theme.of(context).primaryColor,
+                  textColor: Theme.of(context).accentColor,
                   label: Text(
                     "Add Image",
                   ),
