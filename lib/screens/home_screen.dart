@@ -7,6 +7,7 @@ import 'package:blog_api_app/widgets/app_bar/main_app_bar.dart';
 import 'package:blog_api_app/widgets/common/custom_divider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -101,11 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               IconButton(
                 icon: Icon(
-                  _currentIndex == 0 ? Icons.home_rounded : Icons.home_outlined,
+                  AntDesign.home,
                   size: 24.0,
                   color: _currentIndex == 0
-                      ? Colors.blueAccent
-                      : Theme.of(context).accentColor,
+                      ? Theme.of(context).accentColor
+                      : Colors.grey,
                 ),
                 onPressed: () {
                   setState(() {
@@ -116,13 +117,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               IconButton(
                 icon: Icon(
-                  _currentIndex == 1
-                      ? Icons.search_rounded
-                      : Icons.search_outlined,
+                  AntDesign.search1,
                   size: 24.0,
                   color: _currentIndex == 1
-                      ? Colors.blueAccent
-                      : Theme.of(context).accentColor,
+                      ? Theme.of(context).accentColor
+                      : Colors.grey,
                 ),
                 onPressed: () {
                   setState(() {
@@ -133,11 +132,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               IconButton(
                 icon: Icon(
-                  _currentIndex == 2 ? Icons.send_rounded : Icons.send_outlined,
+                  AntDesign.message1,
                   size: 24.0,
                   color: _currentIndex == 2
-                      ? Colors.blueAccent
-                      : Theme.of(context).accentColor,
+                      ? Theme.of(context).accentColor
+                      : Colors.grey,
                 ),
                 onPressed: () {
                   setState(() {
@@ -148,13 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               IconButton(
                 icon: Icon(
-                  _currentIndex == 3
-                      ? Icons.notifications_rounded
-                      : Icons.notifications_outlined,
+                  AntDesign.notification,
                   size: 24.0,
                   color: _currentIndex == 3
-                      ? Colors.blueAccent
-                      : Theme.of(context).accentColor,
+                      ? Theme.of(context).accentColor
+                      : Colors.grey,
                 ),
                 onPressed: () {
                   setState(() {

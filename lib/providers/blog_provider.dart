@@ -27,7 +27,8 @@ class BlogProvider with ChangeNotifier {
     return [..._blogPosts];
   }
 
-  Future<void> fetchBlogPost() async {
+  Future fetchBlogPost() async {
+    print("Fetching Data...");
     final response = await http.get(
       '$apiBlogUrl/',
       headers: <String, String>{
@@ -75,6 +76,7 @@ class BlogProvider with ChangeNotifier {
       final errorData = jsonDecode(response.body);
       throw HttpException(errorData['error_message']);
     }
+    print("Data Fetched");
   }
 
   Future<void> fetchUserBlogPost(String userId) async {

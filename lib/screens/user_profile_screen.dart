@@ -106,7 +106,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               fontFamily: "Raleway",
             ),
           ),
-          SizedBox(height: 20.0),
+          if (_userId != auth.userId) SizedBox(height: 20.0),
           if (_userId != auth.userId)
             Consumer<UserDataProvider>(
               builder: (_, _userData, __) => RaisedButton(
@@ -162,7 +162,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
               ),
             ),
           ),
-          if (_userId != auth.userId) SizedBox(height: 20.0),
+          SizedBox(height: 20.0),
           FollowersCard(
             followers: "9995",
             following: "8565",

@@ -13,6 +13,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  Future _future;
+
   Future<void> _refreshProducts(BuildContext ctx) async {
     try {
       await Provider.of<BlogProvider>(ctx, listen: false).fetchBlogPost();
@@ -42,9 +44,15 @@ class _HomeViewState extends State<HomeView> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _future = _refreshProducts(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _refreshProducts(context),
+      future: _future,
       builder: (_, snapshot) {
         if (snapshot.hasError) {
           print("${snapshot.error}");
