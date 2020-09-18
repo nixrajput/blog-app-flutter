@@ -33,6 +33,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final screenSize = MediaQuery.of(context).size;
@@ -164,8 +165,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
           ),
           SizedBox(height: 20.0),
           FollowersCard(
-            followers: "9995",
-            following: "8565",
+            followers: "${user.followers.length.toString()}",
+            following: "${user.following.length.toString()}",
           ),
           SizedBox(height: 10.0),
           if (user.isFollowing ||

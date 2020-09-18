@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 
 class User with ChangeNotifier {
-  final String id;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String username;
-  final String phone;
-  final String image;
-  final String dob;
-  final String accountType;
-  final String about;
-  final List<dynamic> followers;
-  final List<dynamic> following;
+  String id;
+  String firstName;
+  String lastName;
+  String email;
+  String username;
+  String phone;
+  String image;
+  String dob;
+  String accountType;
+  String about;
+  List<dynamic> followers;
+  List<dynamic> following;
   bool isFollowing;
 
   User({

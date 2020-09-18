@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 class BlogPost with ChangeNotifier {
-  final String title;
-  final String body;
-  final String imageUrl;
-  final String slug;
-  final String timestamp;
-  final String author;
-  final String authorId;
-  final String profilePicUrl;
-  final int likeCount;
-  final List<dynamic> likes;
+  String title;
+  String body;
+  String imageUrl;
+  String slug;
+  String timestamp;
+  String author;
+  String authorId;
+  String profilePicUrl;
+  int likeCount;
+  List<dynamic> likes;
   bool isLiked;
 
   BlogPost({

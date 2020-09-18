@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   File _userImageFile;
   var _isLoading = false;
   var _isEditing = false;
-  var _autoValidate = false;
+  AutovalidateMode _autoValidateMode;
 
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -184,8 +184,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               DateTime.parse("${currentUserData.first.dob}"),
             )),
         FollowersCard(
-          followers: "9995",
-          following: "7565",
+          followers: "${currentUserData.first.followers.length.toString()}",
+          following: "${currentUserData.first.following.length.toString()}",
         ),
         SizedBox(height: 10.0),
         FutureBuilder(
@@ -308,11 +308,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final SnackBar _snackBar = SnackBar(content: Text(errorMessage));
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       }
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
-      return;
     }
     setState(() {
       _isLoading = false;
@@ -323,7 +318,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget buildProfileEditScreen(BuildContext context, currentUserData) {
     return Form(
       key: _formKey,
-      autovalidate: _autoValidate,
+      autovalidateMode: _autoValidateMode,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
@@ -471,7 +466,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  List<String> _accountTypes = ["public", "private"];
+  // List<String> _accountTypes = ["public", "private"];
 
   void _uploadProfilePicture() async {
     if (_userImageFile == null) {

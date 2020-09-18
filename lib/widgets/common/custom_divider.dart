@@ -6,7 +6,7 @@ class CustomDivider extends StatelessWidget {
     return Divider(
       color: Theme.of(context).accentColor,
       height: 0.0,
-      thickness: 0.4,
+      thickness: 0.2,
     );
   }
 }

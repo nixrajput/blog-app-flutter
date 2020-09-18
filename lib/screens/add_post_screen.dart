@@ -21,7 +21,7 @@ class _CreateBlogPostState extends State<CreateBlogPost>
   var _postTitle;
   var _postBody;
   var _isLoading = false;
-  var _autoValidate = false;
+  AutovalidateMode _autoValidateMode;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
 
@@ -69,10 +69,6 @@ class _CreateBlogPostState extends State<CreateBlogPost>
       } catch (error) {
         print(error.toString());
       }
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
     }
     setState(() {
       _isLoading = false;
@@ -80,6 +76,7 @@ class _CreateBlogPostState extends State<CreateBlogPost>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
@@ -111,7 +108,7 @@ class _CreateBlogPostState extends State<CreateBlogPost>
                     SizedBox(height: 10.0),
                     Form(
                       key: _formKey,
-                      autovalidate: _autoValidate,
+                      autovalidateMode: _autoValidateMode,
                       child: Column(children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -119,14 +116,16 @@ class _CreateBlogPostState extends State<CreateBlogPost>
                           ),
                           child: TextFormField(
                             key: ValueKey('title'),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return "Title can't be empty!";
-                              }
-                              return null;
-                            },
+                            // validator: (value) {
+                            //   if (value.isEmpty) {
+                            //     return "Title can't be empty!";
+                            //   }
+                            //   return null;
+                            // },
                             decoration: InputDecoration(
-                                labelText: "Title", errorMaxLines: 2),
+                              labelText: "Title",
+                              errorMaxLines: 2,
+                            ),
                             onSaved: (value) {
                               _postTitle = value.trim();
                             },
@@ -141,7 +140,9 @@ class _CreateBlogPostState extends State<CreateBlogPost>
                             maxLength: 1000,
                             key: ValueKey('body'),
                             decoration: InputDecoration(
-                                labelText: "Write something", errorMaxLines: 2),
+                              labelText: "Write something",
+                              errorMaxLines: 2,
+                            ),
                             onSaved: (value) {
                               _postBody = value.trim();
                             },

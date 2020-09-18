@@ -24,12 +24,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        // ignore: missing_required_param
         ChangeNotifierProxyProvider<AuthProvider, BlogProvider>(
           update: (_, auth, __) => BlogProvider(
             auth.token,
             auth.userId,
           ),
         ),
+        // ignore: missing_required_param
         ChangeNotifierProxyProvider<AuthProvider, UserDataProvider>(
           update: (_, auth, __) => UserDataProvider(
             auth.token,

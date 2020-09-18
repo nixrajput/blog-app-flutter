@@ -15,14 +15,15 @@ class RegisterScreen extends StatefulWidget {
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends State<RegisterScreen>
+    with AutomaticKeepAliveClientMixin {
   var _email = '';
   var _username = '';
   var _password = '';
   var _password2 = '';
   bool _obscureText = true;
   bool _isLoading = false;
-  var _autoValidate = false;
+  AutovalidateMode _autoValidateMode;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   var _errorMessage = "Registration failed.";
@@ -78,10 +79,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         _scaffoldKey.currentState.showSnackBar(_snackBar);
       }
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
     }
     setState(() {
       _isLoading = false;
@@ -89,6 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
@@ -144,7 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           Form(
                             key: _formKey,
-                            autovalidate: _autoValidate,
+                            autovalidateMode: _autoValidateMode,
                             child: Column(
                               children: [
                                 TextFormField(
@@ -316,4 +314,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

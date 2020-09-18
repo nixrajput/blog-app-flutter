@@ -8,6 +8,7 @@ import 'package:blog_api_app/widgets/buttons/bottom_sheet_button.dart';
 import 'package:blog_api_app/widgets/common/custom_divider.dart';
 import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 
 class MainAppBar extends StatelessWidget {
@@ -43,21 +44,21 @@ class MainAppBar extends StatelessWidget {
           SizedBox(height: 10.0),
           CustomDivider(),
           BottomSheetButton(
-            icon: Icons.person_outline,
+            icon: AntDesign.profile,
             title: "Profile",
             onTap: () {
               Navigator.pushNamed(context, ProfileScreen.routeName);
             },
           ),
           BottomSheetButton(
-            icon: Icons.settings_outlined,
+            icon: AntDesign.setting,
             title: "Settings",
             onTap: () {
               Navigator.pushNamed(context, SettingsScreen.routeName);
             },
           ),
           BottomSheetButton(
-            icon: Icons.clear,
+            icon: AntDesign.close,
             title: "Logout",
             onTap: () {
               Provider.of<AuthProvider>(context, listen: false).logout().then(
@@ -104,7 +105,7 @@ class MainAppBar extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: Icon(
-                        Icons.add,
+                        AntDesign.plus,
                         size: 32.0,
                         color: Theme.of(context).accentColor,
                       ),

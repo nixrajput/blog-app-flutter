@@ -24,10 +24,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
-  Future _future;
+  Future _futureBlogPost;
+  Future _futureUserData;
 
   PageController _pageController =
-  PageController(initialPage: 0, keepPage: true);
+      PageController(initialPage: 0, keepPage: true);
 
   pageChanged(int index) {
     setState(() {
@@ -52,30 +53,40 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _getUserData(BuildContext context) async {
+    try {
+      await Provider.of<UserDataProvider>(context, listen: false)
+          .fetchCurrentUserData();
+    } on SocketException {
+      _showErrorDialog(context);
+      throw HttpExceptionHelper('No Internet Connection');
+    }
+  }
+
   void _showErrorDialog(BuildContext context) async {
     await showDialog(
       context: context,
-      builder: (ctx) =>
-          AlertDialog(
-            title: Text("Network Error"),
-            content: Text("No internet connection available."),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                },
-                child: Text("OK"),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        title: Text("Network Error"),
+        content: Text("No internet connection available."),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+            },
+            child: Text("OK"),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
+        ],
+      ),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _future = _refreshProducts(context);
+    _futureBlogPost = _refreshProducts(context);
+    _futureUserData = _getUserData(context);
   }
 
   @override
@@ -93,8 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             FutureBuilder(
-              future: Provider.of<UserDataProvider>(context, listen: false)
-                  .fetchCurrentUserData(),
+              future: _futureUserData,
               builder: (_, snapshot) {
                 if (snapshot.hasError) {
                   print('${snapshot.error}');
@@ -110,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   pageChanged(index);
                 },
                 children: <Widget>[
-                  homeView(context, _future),
+                  homeView(context, _futureBlogPost),
                   searchView(context),
                   chatView(context),
                   notificationView(context),
@@ -136,10 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
             horizontal: 16.0,
           ),
           height: 56.0,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
+          width: MediaQuery.of(context).size.width,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -148,9 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   AntDesign.home,
                   size: 24.0,
                   color: _currentIndex == 0
-                      ? Theme
-                      .of(context)
-                      .accentColor
+                      ? Theme.of(context).accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {
@@ -162,12 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               IconButton(
                 icon: Icon(
-                  AntDesign.search1,
+                  Feather.search,
                   size: 24.0,
                   color: _currentIndex == 1
-                      ? Theme
-                      .of(context)
-                      .accentColor
+                      ? Theme.of(context).accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {
@@ -182,9 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   AntDesign.message1,
                   size: 24.0,
                   color: _currentIndex == 2
-                      ? Theme
-                      .of(context)
-                      .accentColor
+                      ? Theme.of(context).accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {
@@ -196,12 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               IconButton(
                 icon: Icon(
-                  AntDesign.notification,
+                  Ionicons.ios_notifications_outline,
                   size: 24.0,
                   color: _currentIndex == 3
-                      ? Theme
-                      .of(context)
-                      .accentColor
+                      ? Theme.of(context).accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {

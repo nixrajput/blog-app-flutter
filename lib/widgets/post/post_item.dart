@@ -6,6 +6,7 @@ import 'package:blog_api_app/widgets/image_helper/rounded_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 
 class BlogPostItem extends StatelessWidget {
@@ -52,8 +53,8 @@ class BlogPostItem extends StatelessWidget {
               children: <Widget>[
                 if (authorId != currentUserId)
                   BottomSheetButton(
-                    icon: Icons.person_add_rounded,
-                    title: "Follow @$author",
+                    icon: AntDesign.adduser,
+                    title: "View @$author",
                     onTap: () {
                       Navigator.pushNamed(context, UserProfileScreen.routeName,
                           arguments: {'userId': authorId});
@@ -62,25 +63,25 @@ class BlogPostItem extends StatelessWidget {
                 if (authorId == currentUserId)
                   BottomSheetButton(
                     title: "Edit",
-                    icon: Icons.edit,
+                    icon: AntDesign.edit,
                     onTap: () {},
                   ),
                 if (authorId == currentUserId)
                   BottomSheetButton(
                     title: "Delete",
-                    icon: Icons.delete_forever,
+                    icon: AntDesign.delete,
                     onTap: () {
                       _showDeleteDialog(context, slug);
                     },
                   ),
                 BottomSheetButton(
                   title: "Share",
-                  icon: Icons.share,
+                  icon: AntDesign.sharealt,
                   onTap: () {},
                 ),
                 BottomSheetButton(
                   title: "Report",
-                  icon: Icons.flag,
+                  icon: AntDesign.flag,
                   onTap: () {},
                 ),
               ],
@@ -266,7 +267,7 @@ class BlogPostItem extends StatelessWidget {
                   .postLikeToggle(slug);
             },
             icon: Icon(
-              isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+              isLiked ? AntDesign.heart : AntDesign.hearto,
               color: isLiked ? Colors.deepPurple : Colors.grey,
               size: 20.0,
             ),
@@ -286,7 +287,7 @@ class BlogPostItem extends StatelessWidget {
           FlatButton.icon(
             onPressed: () {},
             icon: Icon(
-              Icons.messenger_rounded,
+              Feather.message_circle,
               color: Colors.grey,
               size: 20.0,
             ),
@@ -306,7 +307,7 @@ class BlogPostItem extends StatelessWidget {
           FlatButton.icon(
             onPressed: () {},
             icon: Icon(
-              Icons.repeat_rounded,
+              AntDesign.swap,
               color: Colors.grey,
               size: 20.0,
             ),
