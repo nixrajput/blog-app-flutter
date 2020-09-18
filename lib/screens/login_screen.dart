@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .then((_) {
           Navigator.pushReplacementNamed(context, HomeScreen.routeName);
         });
-      } on HttpException catch (error) {
+      } on HttpExceptionHelper catch (error) {
         print(error.toString());
         if (error.toString().contains('INVALID_USERNAME')) {
           _errorMessage = "Username is incorrect.";
@@ -79,167 +79,177 @@ class _LoginScreenState extends State<LoginScreen> {
           child: _isLoading
               ? CustomLoadingScreen()
               : CustomBodyCard(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20.0,
-                      horizontal: 40.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 20.0,
+                horizontal: 40.0,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "BlogAPI",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme
+                            .of(context)
+                            .accentColor,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 36.0,
+                        fontFamily: "Kaushan Script",
+                      ),
                     ),
-                    child: SingleChildScrollView(
+                    Text(
+                      "A Blogging World",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Kaushan Script",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Text(
+                      "Sign In".toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                        fontFamily: "Alata",
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Form(
+                      key: _formKey,
+                      autovalidate: _autoValidate,
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            "BlogAPI",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Theme.of(context).accentColor,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 36.0,
-                              fontFamily: "Kaushan Script",
-                            ),
-                          ),
-                          Text(
-                            "A Blogging World",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Kaushan Script",
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Text(
-                            "Sign In".toUpperCase(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24.0,
-                              fontFamily: "Alata",
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Form(
-                            key: _formKey,
-                            autovalidate: _autoValidate,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  key: ValueKey('username'),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return "Username can't be empty!";
-                                    } else if (value.length < 3) {
-                                      return "Username must be at least 3 characters long!";
-                                    }
-                                    return null;
-                                  },
-                                  autocorrect: false,
-                                  textCapitalization: TextCapitalization.none,
-                                  decoration: InputDecoration(
-                                    labelText: "Username",
-                                  ),
-                                  onSaved: (value) {
-                                    _username = value.trim();
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                TextFormField(
-                                  key: ValueKey('password'),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return "Password can't be empty!";
-                                    } else if (value.length < 7) {
-                                      return "Password must be at least 8 characters long!";
-                                    }
-                                    return null;
-                                  },
-                                  obscureText: _obscureText,
-                                  decoration: InputDecoration(
-                                    labelText: "Password",
-                                    suffix: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _obscureText = !_obscureText;
-                                        });
-                                      },
-                                      child: Text(
-                                        _obscureText ? "Show" : "Hide",
-                                        style: TextStyle(
-                                          color: Theme.of(context).accentColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  onSaved: (value) {
-                                    _password = value.trim();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Text(
-                            "Forgot Password?",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          RaisedButton(
-                            onPressed: () {
-                              _trySubmit();
+                          TextFormField(
+                            key: ValueKey('username'),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Username can't be empty!";
+                              } else if (value.length < 3) {
+                                return "Username must be at least 3 characters long!";
+                              }
+                              return null;
                             },
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16.0,
+                            autocorrect: false,
+                            textCapitalization: TextCapitalization.none,
+                            decoration: InputDecoration(
+                              labelText: "Username",
                             ),
-                            child: Text(
-                              "Login".toUpperCase(),
-                              style: TextStyle(
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            color: Theme.of(context).accentColor,
+                            onSaved: (value) {
+                              _username = value.trim();
+                            },
                           ),
                           SizedBox(
                             height: 10.0,
                           ),
-                          FlatButton(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16.0,
-                            ),
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                  context, RegisterScreen.routeName);
+                          TextFormField(
+                            key: ValueKey('password'),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Password can't be empty!";
+                              } else if (value.length < 7) {
+                                return "Password must be at least 8 characters long!";
+                              }
+                              return null;
                             },
-                            child: Text(
-                              "Create an Account".toUpperCase(),
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor,
-                                  fontWeight: FontWeight.bold),
+                            obscureText: _obscureText,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              suffix: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _obscureText = !_obscureText;
+                                  });
+                                },
+                                child: Text(
+                                  _obscureText ? "Show" : "Hide",
+                                  style: TextStyle(
+                                    color: Theme
+                                        .of(context)
+                                        .accentColor,
+                                  ),
+                                ),
+                              ),
                             ),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                          )
+                            onSaved: (value) {
+                              _password = value.trim();
+                            },
+                          ),
                         ],
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Text(
+                      "Forgot Password?",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        _trySubmit();
+                      },
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16.0,
+                      ),
+                      child: Text(
+                        "Login".toUpperCase(),
+                        style: TextStyle(
+                          color:
+                          Theme
+                              .of(context)
+                              .scaffoldBackgroundColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      color: Theme
+                          .of(context)
+                          .accentColor,
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    FlatButton(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16.0,
+                      ),
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                            context, RegisterScreen.routeName);
+                      },
+                      child: Text(
+                        "Create an Account".toUpperCase(),
+                        style: TextStyle(
+                            color: Theme
+                                .of(context)
+                                .accentColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      materialTapTargetSize:
+                      MaterialTapTargetSize.shrinkWrap,
+                    )
+                  ],
                 ),
+              ),
+            ),
+          ),
         ),
       ),
     );

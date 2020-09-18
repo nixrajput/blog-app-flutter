@@ -74,7 +74,7 @@ class BlogProvider with ChangeNotifier {
       notifyListeners();
     } else {
       final errorData = jsonDecode(response.body);
-      throw HttpException(errorData['error_message']);
+      throw HttpExceptionHelper(errorData['error_message']);
     }
     print("Data Fetched");
   }
@@ -113,7 +113,7 @@ class BlogProvider with ChangeNotifier {
     } else {
       final errorData = jsonDecode(response.body);
       print(errorData);
-      throw HttpException(errorData['error_message']);
+      throw HttpExceptionHelper(errorData['error_message']);
     }
   }
 
@@ -195,7 +195,7 @@ class BlogProvider with ChangeNotifier {
 
       notifyListeners();
 
-      throw HttpException(errorData['response']);
+      throw HttpExceptionHelper(errorData['response']);
     }
   }
 
@@ -236,7 +236,7 @@ class BlogProvider with ChangeNotifier {
       notifyListeners();
       final errorData = json.decode(utf8.decode(response.bodyBytes));
       print(errorData);
-      throw HttpException(errorData['response']);
+      throw HttpExceptionHelper(errorData['response']);
     }
   }
 
@@ -273,7 +273,7 @@ class BlogProvider with ChangeNotifier {
       await fetchBlogPost();
       notifyListeners();
     } else {
-      throw HttpException(responseData['detail']);
+      throw HttpExceptionHelper(responseData['detail']);
     }
   }
 }

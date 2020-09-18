@@ -57,7 +57,7 @@ class UserDataProvider with ChangeNotifier {
       );
       _currentUserData = _fetchUserData;
     } else {
-      throw HttpException(responseData['detail']);
+      throw HttpExceptionHelper(responseData['detail']);
     }
     notifyListeners();
   }
@@ -109,7 +109,7 @@ class UserDataProvider with ChangeNotifier {
       );
       _userData = _fetchUserData;
     } else {
-      throw HttpException(responseData['detail']);
+      throw HttpExceptionHelper(responseData['detail']);
     }
     notifyListeners();
   }
@@ -140,7 +140,7 @@ class UserDataProvider with ChangeNotifier {
     } else {
       final errorData = json.decode(utf8.decode(response.bodyBytes));
       print(errorData);
-      throw HttpException(errorData['response']);
+      throw HttpExceptionHelper(errorData['response']);
     }
   }
 
@@ -208,7 +208,7 @@ class UserDataProvider with ChangeNotifier {
       notifyListeners();
     } else {
       final errorData = json.decode(utf8.decode(response.bodyBytes));
-      throw HttpException(errorData['detail'][0]);
+      throw HttpExceptionHelper(errorData['detail'][0]);
     }
   }
 }

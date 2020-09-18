@@ -62,7 +62,7 @@ class AuthProvider with ChangeNotifier {
     } else {
       final errorData = jsonDecode(response.body);
       print(errorData);
-      throw HttpException(errorData['error_message']);
+      throw HttpExceptionHelper(errorData['error_message']);
     }
   }
 
@@ -94,7 +94,7 @@ class AuthProvider with ChangeNotifier {
     } else {
       final errorData = jsonDecode(response.body);
       print(errorData);
-      throw HttpException(errorData['error_message']);
+      throw HttpExceptionHelper(errorData['error_message']);
     }
   }
 

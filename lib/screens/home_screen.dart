@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:blog_api_app/helpers/http_exception.dart';
+import 'package:blog_api_app/providers/blog_provider.dart';
 import 'package:blog_api_app/providers/user_provider.dart';
 import 'package:blog_api_app/screens/views/chat_view.dart';
 import 'package:blog_api_app/screens/views/home_view.dart';
@@ -20,9 +24,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
+  Future _future;
 
   PageController _pageController =
-      PageController(initialPage: 0, keepPage: true);
+  PageController(initialPage: 0, keepPage: true);
 
   pageChanged(int index) {
     setState(() {
@@ -36,6 +41,41 @@ class _HomeScreenState extends State<HomeScreen> {
       _pageController.animateToPage((index),
           duration: Duration(milliseconds: 100), curve: Curves.easeInCirc);
     });
+  }
+
+  Future<void> _refreshProducts(BuildContext ctx) async {
+    try {
+      await Provider.of<BlogProvider>(ctx, listen: false).fetchBlogPost();
+    } on SocketException {
+      _showErrorDialog(ctx);
+      throw HttpExceptionHelper('No Internet Connection');
+    }
+  }
+
+  void _showErrorDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) =>
+          AlertDialog(
+            title: Text("Network Error"),
+            content: Text("No internet connection available."),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                },
+                child: Text("OK"),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ],
+          ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _refreshProducts(context);
   }
 
   @override
@@ -70,10 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   pageChanged(index);
                 },
                 children: <Widget>[
-                  HomeView(),
-                  SearchView(),
-                  ChatView(),
-                  NotificationView(),
+                  homeView(context, _future),
+                  searchView(context),
+                  chatView(context),
+                  notificationView(context),
                 ],
               ),
             ),
@@ -96,7 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
             horizontal: 16.0,
           ),
           height: 56.0,
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -105,7 +148,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   AntDesign.home,
                   size: 24.0,
                   color: _currentIndex == 0
-                      ? Theme.of(context).accentColor
+                      ? Theme
+                      .of(context)
+                      .accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {
@@ -120,7 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   AntDesign.search1,
                   size: 24.0,
                   color: _currentIndex == 1
-                      ? Theme.of(context).accentColor
+                      ? Theme
+                      .of(context)
+                      .accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {
@@ -135,7 +182,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   AntDesign.message1,
                   size: 24.0,
                   color: _currentIndex == 2
-                      ? Theme.of(context).accentColor
+                      ? Theme
+                      .of(context)
+                      .accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {
@@ -150,7 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   AntDesign.notification,
                   size: 24.0,
                   color: _currentIndex == 3
-                      ? Theme.of(context).accentColor
+                      ? Theme
+                      .of(context)
+                      .accentColor
                       : Colors.grey,
                 ),
                 onPressed: () {

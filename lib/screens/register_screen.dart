@@ -59,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Navigator.pushReplacementNamed(context, LoginScreen.routeName);
           });
         });
-      } on HttpException catch (error) {
+      } on HttpExceptionHelper catch (error) {
         print(error.toString());
         if (error.toString().contains('EMAIL_EXISTS')) {
           _errorMessage = "This email is already in use.";
